@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Generator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .generate-button {
+            font-size: 24px;
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .generate-button:hover {
+            background-color: #45a049;
+        }
+        .button {
+            font-size: 24px;
+            padding: 10px;
+            margin: 5px;
+            width: 50px;
+            height: 50px;
+            background-color: gray;
+            color: black;
+            text-align: center;
+        }
+        .button.blank {
+            background-color: lightgray;
+        }
+        .button.clicked {
+            background-color: orange;
+        }
+        .ticket-row {
+            display: flex;
+            justify-content: center;
+        }
+        .chip-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .chip {
+            font-size: 16px;
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .chip:hover {
+            background-color: #e0e0e0;
+        }
+        .chip.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .number {
+            font-size: 30px;
+            padding: 10px;
+            margin: 5px;
+            width: 50px;
+            height: 50px;
+            background-color: gray;
+            color: black;
+            display: flex; /* Use flexbox */
+            justify-content: center; /* Align text horizontally center */
+            align-items: center; /* Align text vertically center */
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <button class="generate-button" onclick="generateBlocks()">Generate Ticket</button>
+</div>
+<div id="ticketLayout"></div>
+<div class="chip-container">
+    <div class="chip" id="chip5Numbers">5 Numbers</div>
+    <div class="chip" id="chipLine1">Line 1</div>
+    <div class="chip" id="chipLine2">Line 2</div>
+    <div class="chip" id="chipLine3">Line 3</div>
+    <div class="chip" id="chipFull">Full House</div>
+</div>
+
+<script>
+    let line1 = new Array(9).fill(0);
+    let line2 = new Array(9).fill(0);
+    let line3 = new Array(9).fill(0);
+    let lines = [line1, line2, line3];
+    let isValidTicketBlocks = false;
+
+    let count = 0;
+    let countLine1 = 0;
+    let countLine2 = 0;
+    let countLine3 = 0;
+
+    function generateBlocks() {
+        alert("Generating a new ticket...");
+        console.log("generateBlocks() called");
+        for (let a = 0; a < lines.length; a++) {
+            for (let i = 0; i < lines[a].length; i++) {
+                lines[a][i] = i <= 4 ? 1 : 0;
+            }
+        }
+        shuffleAndValidateBlocks();
+    }
+
+    function shuffleAndValidateBlocks() {
+        for (let a = 0; a < lines.length; a++) {
+            lines[a] = lines[a].sort(() => Math.random() - 0.5);
+        }
+
+        for (let a = 0; a < lines.length; a++) {
+            for (let i = 0; i < lines[a].length; i++) {
+                console.log(`Value: ${lines[a][i]}`);
+            }
+            console.log("---------------------");
+        }
+
+        for (let a = 0; a < 9; a++) {
+            if (lines[0][a] === 0 && lines[1][a] === 0 && lines[2][a] === 0) {
+                console.log("INVALID TICKET");
+                isValidTicketBlocks = false;
+                break;
+            } else {
+                isValidTicketBlocks = true;
+            }
+        }
+
+        if (!isValidTicketBlocks) {
+            shuffleAndValidateBlocks();
+        } else {
+            console.log(" **** VALID TICKET **** ");
+            generateTicketNumbers();
+        }
+    }
+
+    function generateTicketNumbers() {
+        console.log(" ******* GENERATE TICKET NUMBERS ******* ");
+        for (let a = 0; a < lines.length; a++) {
+            for (let i = 0; i < lines[a].length; i++) {
+                console.log(`Value: ${lines[a][i]}`);
+            }
+            console.log("---------------------");
+        }
+
+        for (let a = 0; a < 9; a++) {
+            if ((lines[0][a] === 0 && lines[1][a] === 0 && lines[2][a] === 1) ||
+                (lines[0][a] === 0 && lines[1][a] === 1 && lines[2][a] === 0) ||
+                (lines[0][a] === 1 && lines[1][a] === 0 && lines[2][a] === 0)) {
+                let value = getOneRandomNumber(a);
+                for (let b = 0; b < 3; b++) {
+                    if (lines[b][a] === 1) {
+                        lines[b][a] = value;
+                    }
+                }
+            } else if ((lines[0][a] === 0 && lines[1][a] === 1 && lines[2][a] === 1) ||
+                (lines[0][a] === 1 && lines[1][a] === 0 && lines[2][a] === 1) ||
+                (lines[0][a] === 1 && lines[1][a] === 1 && lines[2][a] === 0)) {
+                let values = getTwoRandomNumbers(a);
+                let valuesCounter = 0;
+                for (let b = 0; b < 3; b++) {
+                    if (lines[b][a] === 1) {
+                        lines[b][a] = values[valuesCounter];
+                        valuesCounter++;
+                    }
+                }
+            } else if ((lines[0][a] === 1 && lines[1][a] === 1 && lines[2][a] === 1)) {
+                let values = getThreeRandomNumbers(a);
+                let valuesCounter = 0;
+                for (let b = 0; b < 3; b++) {
+                    if (lines[b][a] === 1) {
+                        lines[b][a] = values[valuesCounter];
+                        valuesCounter++;
+                    }
+                }
+            }
+        }
+
+        console.log("FINAL TICKET");
+        for (let a = 0; a < lines.length; a++) {
+            for (let i = 0; i < lines[a].length; i++) {
+                console.log(`Value: ${lines[a][i]}`);
+            }
+            console.log("---------------------");
+        }
+
+        showTicket();
+    }
+
+    function showTicket() {
+        console.log("showTicket() called");
+        let ticketLayout = document.getElementById("ticketLayout");
+        ticketLayout.innerHTML = '';
+
+        for (let a = 0; a < 3; a++) {
+            let row = document.createElement("div");
+            row.className = "ticket-row";
+
+            for (let b = 0; b < 9; b++) {
+                let button = createButton(lines[a][b].toString(), `${a}_${b}`);
+                row.appendChild(button);
+            }
+
+            ticketLayout.appendChild(row);
+        }
+    }
+
+    function createButton(text, tag) {
+        let button = document.createElement("div");
+        button.className = "button number";
+        button.innerHTML = text === "0" ? "" : text;
+        button.dataset.tag = tag;
+        button.classList.toggle("blank", text === "0");
+        if (text !== "0") {
+            button.addEventListener("click", onClick);
+        }
+        return button;
+    }
+
+    function getOneRandomNumber(colIndex) {
+        let min, max;
+        if (colIndex === 0) {
+            min = 1;
+            max = 9;
+        } else if (colIndex === 8) {
+            min = colIndex * 10;
+            max = min + 10;
+        } else {
+            min = colIndex * 10;
+            max = min + 9;
+        }
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getTwoRandomNumbers(colIndex) {
+        let min1, max1, min2, max2;
+        let rand = Math.random;
+        if (colIndex === 0) {
+            min1 = 1;
+            max1 = 5;
+            min2 = 6;
+            max2 = 9;
+        } else if (colIndex === 8) {
+            min1 = colIndex * 10;
+            max1 = min1 + 5;
+            min2 = max1 + 1;
+            max2 = min2 + 4;
+        } else {
+            min1 = colIndex * 10;
+            max1 = min1 + 5;
+            min2 = max1 + 1;
+            max2 = min2 + 4;
+        }
+        return [Math.floor(rand() * (max1 - min1 + 1)) + min1, Math.floor(rand() * (max2 - min2 + 1)) + min2];
+    }
+
+    function getThreeRandomNumbers(colIndex) {
+        let min1, max1, min2, max2, min3, max3;
+        let rand = Math.random;
+        if (colIndex === 0) {
+            min1 = 1;
+            max1 = 3;
+            min2 = 4;
+            max2 = 6;
+            min3 = 7;
+            max3 = 9;
+        } else if (colIndex === 8) {
+            min1 = colIndex * 10;
+            max1 = min1 + 3;
+            min2 = max1 + 1;
+            max2 = min2 + 2;
+            min3 = max2 + 1;
+            max3 = min3 + 2;
+        } else {
+            min1 = colIndex * 10;
+            max1 = min1 + 3;
+            min2 = max1 + 1;
+            max2 = min2 + 2;
+            min3 = max2 + 1;
+            max3 = min3 + 1;
+        }
+        return [Math.floor(rand() * (max1 - min1 + 1)) + min1, Math.floor(rand() * (max2 - min2 + 1)) + min2, Math.floor(rand() * (max3 - min3 + 1)) + min3];
+    }
+
+    function onClick(event) {
+        let button = event.target;
+        button.classList.toggle("clicked");
+
+        let indices = button.dataset.tag.split('_');
+        let row = parseInt(indices[0]);
+        let col = parseInt(indices[1]);
+        let value = lines[row][col];
+
+        if (row === 0) {
+            countLine1 += button.classList.contains("clicked") ? 1 : -1;
+        } else if (row === 1) {
+            countLine2 += button.classList.contains("clicked") ? 1 : -1;
+        } else if (row === 2) {
+            countLine3 += button.classList.contains("clicked") ? 1 : -1;
+        }
+
+        count += button.classList.contains("clicked") ? 1 : -1;
+
+        updateChip("chip5Numbers", count >= 5);
+        updateChip("chipLine1", countLine1 >= 5);
+        updateChip("chipLine2", countLine2 >= 5);
+        updateChip("chipLine3", countLine3 >= 5);
+        updateChip("chipFull", count >= 15);
+    }
+
+    function updateChip(chipId, isActive) {
+        let chip = document.getElementById(chipId);
+        chip.classList.toggle("active", isActive);
+    }
+</script>
+
+</body>
+</html>
