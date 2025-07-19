@@ -594,7 +594,7 @@ progress {
   color: #6c757d;
 }
 .blockquote-footer::before {
-  content: "— ";
+  content: "— ";
 }
 
 .img-fluid {
@@ -798,10 +798,6 @@ progress {
 
 .offset-3 {
   margin-left: 25%;
-}
-
-.offset-4 {
-  margin-left: 33.33333333%;
 }
 
 .offset-5 {
@@ -11588,8 +11584,8 @@ html {
   max-width: 40rem;
 }
 .profile .profile-img {
-  height: 80vw;
-  max-height: 45rem;
+  height: 65vw;
+  max-height: 36rem;
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -11638,7 +11634,7 @@ html {
     width: 60vw;
   }
   .profile .profile-img {
-    height: 65vw;
+    height: 50vw;
   }
   .profile .dots-1 {
     width: 3vw;
@@ -11663,7 +11659,7 @@ html {
     width: 50vw;
   }
   .profile .profile-img {
-    height: 55vw;
+    height: 45vw;
   }
   .profile .dots-1 {
     width: 3vw;
@@ -11688,7 +11684,7 @@ html {
     width: 40vw;
   }
   .profile .profile-img {
-    height: 45vw;
+    height: 37vw;
   }
   .profile .dots-1 {
     width: 1.5vw;
@@ -11713,7 +11709,7 @@ html {
     width: 35vw;
   }
   .profile .profile-img {
-    height: 40vw;
+    height: 32vw;
   }
   .profile .dots-1 {
     width: 1.5vw;
