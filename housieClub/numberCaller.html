@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number Caller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        body, button, .number-button, #called-number, #call-button, #reset-button {
+            font-family: 'Manrope', Arial, sans-serif;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
         .grid-layout {
             display: grid;
@@ -33,45 +31,113 @@
             background-color: orange;
             color: white;
         }
+        .number-button.last-called {
+            border: 3px solid #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+        }
+        .horizontal-layout {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 180px; /* Extra space between grid and right panel */
+            height: 100vh;
+        }
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
         #called-number {
-            margin-top: 20px;
-            font-size: 36px; /* Increased font size */
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 96px;
             font-weight: bold;
             color: red;
+            width: 180px;
+            height: 180px;
+            background: #fff;
+            border: 8px solid red;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        #call-button, #reset-button {
+            width: 240px;
+            padding: 12px 0;
+            font-size: 18px;
+            font-family: 'Manrope', Arial, sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 0;
         }
         #call-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
             background-color: #4CAF50;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        }
+        #call-button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        #reset-button {
+            background-color: #2196F3;
+            color: white;
+            margin-top: 2px;
+        }
+        #reset-button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        @media (max-width: 900px) {
+            .horizontal-layout {
+                flex-direction: column;
+                gap: 40px;
+                height: auto;
+                padding: 40px 0;
+            }
+            #called-number {
+                width: 120px;
+                height: 120px;
+                font-size: 48px;
+                border-width: 5px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div id="called-number"></div>
-<div class="grid-layout" id="numberLayout"></div>
-<button id="call-button" onclick="callNumber()">Call Number</button>
+<div class="horizontal-layout">
+    <div class="grid-layout" id="numberLayout" aria-label="Number grid"></div>
+    <div class="right-panel">
+        <div id="called-number" aria-live="polite" aria-label="Last called number"></div>
+        <button id="call-button" onclick="callNumber()" aria-label="Call Number">Call Number</button>
+        <button id="reset-button" onclick="resetGame()" aria-label="Reset Game">Reset</button>
+    </div>
+</div>
 
 <script>
     let numbers = Array.from({length: 90}, (_, i) => i + 1);
     let shuffledNumbers = numbers.slice().sort(() => Math.random() - 0.5);
     let counter = 0;
+    let lastCalledIndex = null;
 
     function showNumberLayout() {
         let numberLayout = document.getElementById("numberLayout");
         numberLayout.innerHTML = '';
 
         numbers.forEach((number, index) => {
-            let button = document.createElement("div");
+            let button = document.createElement("button");
             button.classList.add("number-button");
             button.textContent = number < 10 ? '0' + number : number;
             button.dataset.index = index;
-            button.addEventListener("click", () => updateNumberLayout(index));
+            button.setAttribute('aria-label', `Number ${number}`);
+            button.disabled = true; // prevent manual clicking
             numberLayout.appendChild(button);
         });
     }
@@ -82,19 +148,36 @@
             document.getElementById("called-number").textContent = calledNumber;
             updateNumberLayout(shuffledNumbers[counter] - 1);
             counter++;
-        } else {
-            document.getElementById("call-button").textContent = "Game Over";
+            if (counter === 90) {
+                document.getElementById("call-button").textContent = "Game Over";
+                document.getElementById("call-button").disabled = true;
+                document.getElementById("call-button").style.backgroundColor = '#aaa';
+                document.getElementById("call-button").style.cursor = 'not-allowed';
+            }
         }
     }
 
     function updateNumberLayout(index) {
         let numberButtons = document.querySelectorAll(".number-button");
-        numberButtons.forEach(button => {
-            let buttonIndex = parseInt(button.dataset.index);
-            if (buttonIndex === index) {
-                button.classList.add("clicked");
+        numberButtons.forEach((button, i) => {
+            button.classList.remove("last-called");
+            if (parseInt(button.dataset.index) === index) {
+                button.classList.add("clicked", "last-called");
             }
         });
+        lastCalledIndex = index;
+    }
+
+    function resetGame() {
+        shuffledNumbers = numbers.slice().sort(() => Math.random() - 0.5);
+        counter = 0;
+        lastCalledIndex = null;
+        document.getElementById("called-number").textContent = '';
+        document.getElementById("call-button").textContent = "Call Number";
+        document.getElementById("call-button").disabled = false;
+        document.getElementById("call-button").style.backgroundColor = '#4CAF50';
+        document.getElementById("call-button").style.cursor = 'pointer';
+        showNumberLayout();
     }
 
     showNumberLayout();
