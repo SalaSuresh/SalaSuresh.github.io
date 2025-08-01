@@ -7,8 +7,8 @@ class GameManager {
         this.gameState = 'waiting'; // waiting, active, finished
         this.pollInterval = null;
         this.POLL_INTERVAL = 2000; // 2 seconds
-        this.SERVER_URL = 'https://api.jsonbin.io/v3/b'; // Using JSONBin as a simple data store
-        this.API_KEY = '65f8b8c8e41b6d0c8c8c8c8c'; // Free API key for testing
+        this.API_URL = 'https://api.jsonbin.io/v3/b'; // JSONBin API for cloud storage
+        this.API_KEY = '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG'; // Free API key
     }
 
     // Generate unique game code
@@ -148,23 +148,31 @@ class GameManager {
             const storageKey = `housie_game_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // For now, we'll use a simple approach with localStorage as fallback
-            // In a real implementation, you'd use a proper backend API
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            sessionStorage.setItem(storageKey, JSON.stringify(data));
+            // Create a unique bin ID for this game
+            const binId = this.generateBinId(this.gameCode);
+            console.log('Bin ID:', binId);
             
-            console.log('Data saved to local storage as fallback');
+            // Save to JSONBin API
+            const response = await fetch(`${this.API_URL}/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': this.API_KEY
+                },
+                body: JSON.stringify(data)
+            });
             
-            // TODO: Implement proper cloud storage API
-            // const response = await fetch(`${this.SERVER_URL}/${storageKey}`, {
-            //     method: 'PUT',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'X-Master-Key': this.API_KEY
-            //     },
-            //     body: JSON.stringify(data)
-            // });
-            // console.log('Cloud save response:', response);
+            if (response.ok) {
+                console.log('Data saved to cloud successfully');
+                const result = await response.json();
+                console.log('Cloud save response:', result);
+            } else {
+                console.error('Failed to save to cloud:', response.status);
+                // Fallback to local storage
+                localStorage.setItem(storageKey, JSON.stringify(data));
+                sessionStorage.setItem(storageKey, JSON.stringify(data));
+                console.log('Data saved to local storage as fallback');
+            }
             
         } catch (error) {
             console.error('Error saving game data to cloud:', error);
@@ -172,6 +180,7 @@ class GameManager {
             const storageKey = `housie_game_${this.gameCode}`;
             localStorage.setItem(storageKey, JSON.stringify(data));
             sessionStorage.setItem(storageKey, JSON.stringify(data));
+            console.log('Data saved to local storage as fallback');
         }
     }
 
@@ -184,7 +193,29 @@ class GameManager {
             const storageKey = `housie_game_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // For now, check local storage as fallback
+            // Create a unique bin ID for this game
+            const binId = this.generateBinId(this.gameCode);
+            console.log('Bin ID:', binId);
+            
+            // Try to get from cloud first
+            const response = await fetch(`${this.API_URL}/${binId}`, {
+                headers: {
+                    'X-Master-Key': this.API_KEY
+                }
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Cloud data retrieved:', result);
+                if (result.record) {
+                    console.log('Parsed game data from cloud:', result.record);
+                    return result.record;
+                }
+            } else {
+                console.log('No cloud data found, checking local storage');
+            }
+            
+            // Fallback to local storage
             let gameData = localStorage.getItem(storageKey);
             if (!gameData) {
                 gameData = sessionStorage.getItem(storageKey);
@@ -193,22 +224,32 @@ class GameManager {
             console.log('Local storage data:', gameData);
             
             const parsedData = gameData ? JSON.parse(gameData) : null;
-            console.log('Parsed game data:', parsedData);
+            console.log('Parsed game data from local:', parsedData);
             
             return parsedData;
             
-            // TODO: Implement proper cloud storage API
-            // const response = await fetch(`${this.SERVER_URL}/${storageKey}`);
-            // if (response.ok) {
-            //     const data = await response.json();
-            //     return data.record;
-            // }
-            // return null;
-            
         } catch (error) {
             console.error('Error getting game data from cloud:', error);
-            return null;
+            // Fallback to local storage
+            const storageKey = `housie_game_${this.gameCode}`;
+            let gameData = localStorage.getItem(storageKey);
+            if (!gameData) {
+                gameData = sessionStorage.getItem(storageKey);
+            }
+            return gameData ? JSON.parse(gameData) : null;
         }
+    }
+
+    // Generate a unique bin ID for JSONBin
+    generateBinId(gameCode) {
+        // Create a hash of the game code to get a consistent bin ID
+        let hash = 0;
+        for (let i = 0; i < gameCode.length; i++) {
+            const char = gameCode.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+        return Math.abs(hash).toString();
     }
 
     // Get current game data (for backward compatibility)
