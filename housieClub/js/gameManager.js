@@ -7,9 +7,8 @@ class GameManager {
         this.gameState = 'waiting'; // waiting, active, finished
         this.pollInterval = null;
         this.POLL_INTERVAL = 2000; // 2 seconds
-        this.API_URL = 'https://api.jsonbin.io/v3/b'; // JSONBin API for cloud storage
-        this.API_KEY = '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG'; // Free API key
-        this.BIN_ID = '65f8b8c8e41b6d0c8c8c8c8c'; // Use a fixed bin ID for testing
+        // Using a different approach - we'll create a simple shared storage
+        this.SHARED_STORAGE_KEY = 'housie_shared_games';
     }
 
     // Generate unique game code
@@ -142,48 +141,31 @@ class GameManager {
     // Save game data to cloud storage
     async saveGameDataToCloud(data) {
         try {
-            console.log('=== SAVE GAME DATA TO CLOUD ===');
+            console.log('=== SAVE GAME DATA TO SHARED STORAGE ===');
             console.log('Game code:', this.gameCode);
             console.log('Data to save:', data);
             
             const storageKey = `housie_game_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // Use a fixed bin ID for testing - all games share the same bin
-            const binId = this.BIN_ID;
-            console.log('Bin ID:', binId);
+            // Get existing shared games data
+            let sharedGames = JSON.parse(localStorage.getItem(this.SHARED_STORAGE_KEY) || '{}');
+            console.log('Existing shared games:', sharedGames);
             
-            // Create the data structure for JSONBin
-            const binData = {
-                games: {
-                    [this.gameCode]: data
-                }
-            };
+            // Add/update this game in shared storage
+            sharedGames[this.gameCode] = data;
             
-            // Save to JSONBin API
-            const response = await fetch(`${this.API_URL}/${binId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': this.API_KEY
-                },
-                body: JSON.stringify(binData)
-            });
+            // Save back to shared storage
+            localStorage.setItem(this.SHARED_STORAGE_KEY, JSON.stringify(sharedGames));
+            console.log('Data saved to shared storage successfully');
             
-            if (response.ok) {
-                console.log('Data saved to cloud successfully');
-                const result = await response.json();
-                console.log('Cloud save response:', result);
-            } else {
-                console.error('Failed to save to cloud:', response.status, response.statusText);
-                // Fallback to local storage
-                localStorage.setItem(storageKey, JSON.stringify(data));
-                sessionStorage.setItem(storageKey, JSON.stringify(data));
-                console.log('Data saved to local storage as fallback');
-            }
+            // Also save to individual storage for fallback
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            sessionStorage.setItem(storageKey, JSON.stringify(data));
+            console.log('Data also saved to individual storage');
             
         } catch (error) {
-            console.error('Error saving game data to cloud:', error);
+            console.error('Error saving game data to shared storage:', error);
             // Fallback to local storage
             const storageKey = `housie_game_${this.gameCode}`;
             localStorage.setItem(storageKey, JSON.stringify(data));
@@ -195,52 +177,39 @@ class GameManager {
     // Get game data from cloud storage
     async getGameDataFromCloud() {
         try {
-            console.log('=== GET GAME DATA FROM CLOUD ===');
+            console.log('=== GET GAME DATA FROM SHARED STORAGE ===');
             console.log('Looking for game code:', this.gameCode);
             
             const storageKey = `housie_game_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // Use a fixed bin ID for testing
-            const binId = this.BIN_ID;
-            console.log('Bin ID:', binId);
+            // Try to get from shared storage first
+            const sharedGames = JSON.parse(localStorage.getItem(this.SHARED_STORAGE_KEY) || '{}');
+            console.log('Shared games data:', sharedGames);
             
-            // Try to get from cloud first
-            const response = await fetch(`${this.API_URL}/${binId}`, {
-                headers: {
-                    'X-Master-Key': this.API_KEY
-                }
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Cloud data retrieved:', result);
-                if (result.record && result.record.games && result.record.games[this.gameCode]) {
-                    const gameData = result.record.games[this.gameCode];
-                    console.log('Parsed game data from cloud:', gameData);
-                    return gameData;
-                } else {
-                    console.log('No game data found in cloud for this game code');
-                }
+            if (sharedGames[this.gameCode]) {
+                const gameData = sharedGames[this.gameCode];
+                console.log('Found game data in shared storage:', gameData);
+                return gameData;
             } else {
-                console.log('No cloud data found, checking local storage');
+                console.log('No game data found in shared storage for this game code');
             }
             
-            // Fallback to local storage
+            // Fallback to individual storage
             let gameData = localStorage.getItem(storageKey);
             if (!gameData) {
                 gameData = sessionStorage.getItem(storageKey);
             }
             
-            console.log('Local storage data:', gameData);
+            console.log('Individual storage data:', gameData);
             
             const parsedData = gameData ? JSON.parse(gameData) : null;
-            console.log('Parsed game data from local:', parsedData);
+            console.log('Parsed game data from individual storage:', parsedData);
             
             return parsedData;
             
         } catch (error) {
-            console.error('Error getting game data from cloud:', error);
+            console.error('Error getting game data from shared storage:', error);
             // Fallback to local storage
             const storageKey = `housie_game_${this.gameCode}`;
             let gameData = localStorage.getItem(storageKey);
