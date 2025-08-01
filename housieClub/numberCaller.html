@@ -108,6 +108,297 @@
                 border-width: 5px;
             }
         }
+
+        /* Tablet Responsive Design */
+        @media (max-width: 1024px) {
+            .horizontal-layout {
+                flex-direction: column;
+                gap: 30px;
+                padding: 20px 0;
+                height: auto;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(9, 1fr);
+                gap: 4px;
+                margin: 0 10px;
+            }
+            
+            .number-button {
+                padding: 12px 8px;
+                font-size: 18px;
+            }
+            
+            #called-number {
+                width: 100px;
+                height: 100px;
+                font-size: 36px;
+                border-width: 4px;
+            }
+            
+            #call-button, #reset-button {
+                width: 200px;
+                padding: 10px 0;
+                font-size: 16px;
+            }
+        }
+
+        /* 14-inch Laptop and Small Desktop */
+        @media (max-width: 1366px) and (min-width: 1025px) {
+            .horizontal-layout {
+                gap: 120px;
+            }
+            
+            .grid-layout {
+                gap: 6px;
+                margin: 0 15px;
+            }
+            
+            .number-button {
+                padding: 14px 10px;
+                font-size: 20px;
+            }
+            
+            #called-number {
+                width: 140px;
+                height: 140px;
+                font-size: 60px;
+                border-width: 6px;
+            }
+            
+            #call-button, #reset-button {
+                width: 220px;
+                padding: 12px 0;
+                font-size: 18px;
+            }
+        }
+
+        /* Surface Duo and Dual Screen Devices */
+        @media (max-width: 540px) {
+            .horizontal-layout {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px 0;
+                height: auto;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 3px;
+                margin: 0 8px;
+            }
+            
+            .number-button {
+                padding: 8px 4px;
+                font-size: 14px;
+                min-height: 35px;
+            }
+            
+            #called-number {
+                width: 80px;
+                height: 80px;
+                font-size: 28px;
+                border-width: 3px;
+            }
+            
+            #call-button, #reset-button {
+                width: 160px;
+                padding: 8px 0;
+                font-size: 14px;
+            }
+            
+            .right-panel {
+                gap: 16px;
+            }
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 480px) {
+            .horizontal-layout {
+                gap: 15px;
+                padding: 10px 0;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 2px;
+                margin: 0 5px;
+            }
+            
+            .number-button {
+                padding: 6px 2px;
+                font-size: 12px;
+                min-height: 30px;
+            }
+            
+            #called-number {
+                width: 70px;
+                height: 70px;
+                font-size: 24px;
+                border-width: 2px;
+            }
+            
+            #call-button, #reset-button {
+                width: 140px;
+                padding: 6px 0;
+                font-size: 12px;
+            }
+            
+            .right-panel {
+                gap: 12px;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 360px) {
+            .grid-layout {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 2px;
+            }
+            
+            .number-button {
+                padding: 4px 1px;
+                font-size: 10px;
+                min-height: 25px;
+            }
+            
+            #called-number {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+                border-width: 2px;
+            }
+            
+            #call-button, #reset-button {
+                width: 120px;
+                padding: 5px 0;
+                font-size: 10px;
+            }
+        }
+
+        /* Surface Duo Landscape */
+        @media (max-width: 540px) and (orientation: landscape) {
+            .horizontal-layout {
+                flex-direction: row;
+                gap: 15px;
+                padding: 10px 0;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(10, 1fr);
+                gap: 2px;
+            }
+            
+            .number-button {
+                padding: 4px 2px;
+                font-size: 10px;
+                min-height: 25px;
+            }
+            
+            #called-number {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+                border-width: 2px;
+            }
+            
+            #call-button, #reset-button {
+                width: 100px;
+                padding: 5px 0;
+                font-size: 10px;
+            }
+            
+            .right-panel {
+                gap: 8px;
+            }
+        }
+
+        /* Landscape Mobile */
+        @media (max-width: 768px) and (orientation: landscape) and (min-width: 541px) {
+            .horizontal-layout {
+                flex-direction: row;
+                gap: 20px;
+                padding: 10px 0;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(10, 1fr);
+                gap: 3px;
+            }
+            
+            .number-button {
+                padding: 6px 4px;
+                font-size: 12px;
+                min-height: 30px;
+            }
+            
+            #called-number {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+                border-width: 2px;
+            }
+            
+            #call-button, #reset-button {
+                width: 120px;
+                padding: 6px 0;
+                font-size: 12px;
+            }
+            
+            .right-panel {
+                gap: 12px;
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            .horizontal-layout {
+                gap: 200px;
+            }
+            
+            .grid-layout {
+                gap: 8px;
+                margin: 0 30px;
+            }
+            
+            .number-button {
+                padding: 20px;
+                font-size: 28px;
+            }
+            
+            #called-number {
+                width: 200px;
+                height: 200px;
+                font-size: 120px;
+                border-width: 10px;
+            }
+            
+            #call-button, #reset-button {
+                width: 280px;
+                padding: 15px 0;
+                font-size: 20px;
+            }
+        }
+
+        /* Ultra Wide Screens */
+        @media (min-width: 1600px) {
+            .horizontal-layout {
+                gap: 250px;
+            }
+            
+            #called-number {
+                width: 250px;
+                height: 250px;
+                font-size: 150px;
+                border-width: 12px;
+            }
+            
+            #call-button, #reset-button {
+                width: 320px;
+                padding: 18px 0;
+                font-size: 22px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -126,6 +417,70 @@
     let shuffledNumbers = numbers.slice().sort(() => Math.random() - 0.5);
     let counter = 0;
     let lastCalledIndex = null;
+    let speechSynth = window.speechSynthesis;
+    let voices = [];
+
+    // Initialize speech synthesis
+    function initSpeech() {
+        // Wait for voices to load
+        speechSynth.onvoiceschanged = function() {
+            voices = speechSynth.getVoices();
+            // Try to find a good English voice
+            let preferredVoice = voices.find(voice => 
+                voice.lang.includes('en') && voice.name.includes('Google')
+            ) || voices.find(voice => 
+                voice.lang.includes('en')
+            ) || voices[0];
+            
+            if (preferredVoice) {
+                console.log('Using voice:', preferredVoice.name);
+            }
+        };
+    }
+
+    // Speak the number
+    function speakNumber(number) {
+        if (speechSynth && speechSynth.speaking) {
+            speechSynth.cancel(); // Stop current speech
+        }
+
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = `Number ${number}`;
+        utterance.rate = 0.8; // Slightly slower for clarity
+        utterance.pitch = 1.0;
+        utterance.volume = 0.8;
+
+        // Try to use a good English voice
+        if (voices.length > 0) {
+            let preferredVoice = voices.find(voice => 
+                voice.lang.includes('en') && voice.name.includes('Google')
+            ) || voices.find(voice => 
+                voice.lang.includes('en')
+            ) || voices[0];
+            
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+        }
+
+        utterance.onstart = function() {
+            console.log('Speaking:', number);
+        };
+
+        utterance.onend = function() {
+            console.log('Finished speaking:', number);
+        };
+
+        utterance.onerror = function(event) {
+            console.error('Speech error:', event.error);
+        };
+
+        try {
+            speechSynth.speak(utterance);
+        } catch (error) {
+            console.error('Speech synthesis error:', error);
+        }
+    }
 
     function showNumberLayout() {
         let numberLayout = document.getElementById("numberLayout");
@@ -147,12 +502,21 @@
             let calledNumber = shuffledNumbers[counter];
             document.getElementById("called-number").textContent = calledNumber;
             updateNumberLayout(shuffledNumbers[counter] - 1);
+            
+            // Speak the number
+            speakNumber(calledNumber);
+            
             counter++;
             if (counter === 90) {
                 document.getElementById("call-button").textContent = "Game Over";
                 document.getElementById("call-button").disabled = true;
                 document.getElementById("call-button").style.backgroundColor = '#aaa';
                 document.getElementById("call-button").style.cursor = 'not-allowed';
+                
+                // Speak game over
+                setTimeout(() => {
+                    speakNumber("Game Over! All numbers have been called.");
+                }, 1000);
             }
         }
     }
@@ -177,10 +541,20 @@
         document.getElementById("call-button").disabled = false;
         document.getElementById("call-button").style.backgroundColor = '#4CAF50';
         document.getElementById("call-button").style.cursor = 'pointer';
+        
+        // Stop any current speech
+        if (speechSynth && speechSynth.speaking) {
+            speechSynth.cancel();
+        }
+        
         showNumberLayout();
     }
 
-    showNumberLayout();
+    // Initialize speech synthesis when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initSpeech();
+        showNumberLayout();
+    });
 </script>
 
 </body>
