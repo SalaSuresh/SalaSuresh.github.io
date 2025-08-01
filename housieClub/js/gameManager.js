@@ -9,6 +9,7 @@ class GameManager {
         this.POLL_INTERVAL = 2000; // 2 seconds
         this.API_URL = 'https://api.jsonbin.io/v3/b'; // JSONBin API for cloud storage
         this.API_KEY = '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG'; // Free API key
+        this.BIN_ID = '65f8b8c8e41b6d0c8c8c8c8c'; // Use a fixed bin ID for testing
     }
 
     // Generate unique game code
@@ -148,9 +149,16 @@ class GameManager {
             const storageKey = `housie_game_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // Create a unique bin ID for this game
-            const binId = this.generateBinId(this.gameCode);
+            // Use a fixed bin ID for testing - all games share the same bin
+            const binId = this.BIN_ID;
             console.log('Bin ID:', binId);
+            
+            // Create the data structure for JSONBin
+            const binData = {
+                games: {
+                    [this.gameCode]: data
+                }
+            };
             
             // Save to JSONBin API
             const response = await fetch(`${this.API_URL}/${binId}`, {
@@ -159,7 +167,7 @@ class GameManager {
                     'Content-Type': 'application/json',
                     'X-Master-Key': this.API_KEY
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(binData)
             });
             
             if (response.ok) {
@@ -167,7 +175,7 @@ class GameManager {
                 const result = await response.json();
                 console.log('Cloud save response:', result);
             } else {
-                console.error('Failed to save to cloud:', response.status);
+                console.error('Failed to save to cloud:', response.status, response.statusText);
                 // Fallback to local storage
                 localStorage.setItem(storageKey, JSON.stringify(data));
                 sessionStorage.setItem(storageKey, JSON.stringify(data));
@@ -193,8 +201,8 @@ class GameManager {
             const storageKey = `housie_game_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // Create a unique bin ID for this game
-            const binId = this.generateBinId(this.gameCode);
+            // Use a fixed bin ID for testing
+            const binId = this.BIN_ID;
             console.log('Bin ID:', binId);
             
             // Try to get from cloud first
@@ -207,9 +215,12 @@ class GameManager {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Cloud data retrieved:', result);
-                if (result.record) {
-                    console.log('Parsed game data from cloud:', result.record);
-                    return result.record;
+                if (result.record && result.record.games && result.record.games[this.gameCode]) {
+                    const gameData = result.record.games[this.gameCode];
+                    console.log('Parsed game data from cloud:', gameData);
+                    return gameData;
+                } else {
+                    console.log('No game data found in cloud for this game code');
                 }
             } else {
                 console.log('No cloud data found, checking local storage');
@@ -238,18 +249,6 @@ class GameManager {
             }
             return gameData ? JSON.parse(gameData) : null;
         }
-    }
-
-    // Generate a unique bin ID for JSONBin
-    generateBinId(gameCode) {
-        // Create a hash of the game code to get a consistent bin ID
-        let hash = 0;
-        for (let i = 0; i < gameCode.length; i++) {
-            const char = gameCode.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32-bit integer
-        }
-        return Math.abs(hash).toString();
     }
 
     // Get current game data (for backward compatibility)
