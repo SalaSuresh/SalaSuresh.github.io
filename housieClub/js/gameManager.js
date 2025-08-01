@@ -358,7 +358,23 @@ class GameManager {
     startGame() {}
     endGame() {}
     isGameActive() { return false; }
-    getCurrentPlayer() { return {}; }
+    // Get current player info
+    getCurrentPlayer() {
+        try {
+            const playerData = localStorage.getItem('housie_player') || sessionStorage.getItem('housie_player');
+            if (playerData) {
+                const player = JSON.parse(playerData);
+                console.log('Current player retrieved:', player);
+                return player;
+            } else {
+                console.log('No player data found in storage');
+                return {};
+            }
+        } catch (error) {
+            console.error('Error getting current player:', error);
+            return {};
+        }
+    }
 }
 
 // Global game manager instance

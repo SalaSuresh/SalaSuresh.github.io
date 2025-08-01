@@ -6,6 +6,11 @@
     <title>Housie Ticket Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="js/gameManager.js"></script>
+    
+    <!-- Firebase SDK for cross-browser multiplayer -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -376,20 +381,32 @@
 
     // Initialize guest player
     function initializeGuest() {
+        console.log('=== INITIALIZE GUEST ===');
+        
         const player = gameManager.getCurrentPlayer();
-        const gameCode = localStorage.getItem('housie_game_code');
+        console.log('Retrieved player data:', player);
+        
+        const gameCode = localStorage.getItem('housie_game_code') || sessionStorage.getItem('housie_game_code');
+        console.log('Retrieved game code:', gameCode);
         
         if (!gameCode) {
+            console.error('No game code found');
             alert('No game found. Please join a game from the lobby.');
             window.location.href = 'index.html';
             return;
         }
         
         if (!player.username) {
+            console.error('No player username found');
+            console.log('Player object:', player);
             alert('Player information not found. Please join a game from the lobby.');
             window.location.href = 'index.html';
             return;
         }
+        
+        console.log('Guest initialized successfully');
+        console.log('Game code:', gameCode);
+        console.log('Player username:', player.username);
         
         // Display game info
         document.getElementById('gameCodeDisplay').textContent = gameCode;
