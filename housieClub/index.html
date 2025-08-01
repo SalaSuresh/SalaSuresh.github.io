@@ -6,6 +6,7 @@
     <title>Housie Club - Host or Join Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="js/gameManager.js"></script>
     <style>
         * {
             margin: 0;
@@ -117,6 +118,113 @@
             color: white;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modal h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .modal-button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-button.primary {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+        }
+
+        .modal-button.secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .game-code-display {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(66, 133, 244, 0.3);
+        }
+
         .floating-elements {
             position: fixed;
             top: 0;
@@ -222,6 +330,17 @@
             }
         }
 
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -252,6 +371,11 @@
                 left: 1rem;
                 padding: 0.8rem 1.2rem;
                 font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 1.5rem;
             }
         }
 
@@ -284,10 +408,10 @@
         </div>
 
         <div class="button-container">
-            <button class="role-button host-button" onclick="window.location.href='numberCaller.html'">
+            <button class="role-button host-button" onclick="handleHostClick()">
                 Host
             </button>
-            <button class="role-button guest-button" onclick="window.location.href='ticket.html'">
+            <button class="role-button guest-button" onclick="handleGuestClick()">
                 Guest
             </button>
         </div>
@@ -297,16 +421,201 @@
         </div>
     </div>
 
+    <!-- Host Modal -->
+    <div id="hostModal" class="modal">
+        <div class="modal-content">
+            <h2>Create New Game</h2>
+            <div class="game-code-display" id="gameCodeDisplay">
+                Generating...
+            </div>
+            <p style="color: #4a5568; margin-bottom: 1.5rem;">
+                Share this code with players on the same WiFi network
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-button primary" onclick="startHosting()">
+                    Start Hosting
+                </button>
+                <button class="modal-button secondary" onclick="closeModal('hostModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guest Modal -->
+    <div id="guestModal" class="modal">
+        <div class="modal-content">
+            <h2>Join Game</h2>
+            <div class="input-group">
+                <label for="gameCodeInput">Game Code:</label>
+                <input type="text" id="gameCodeInput" placeholder="Enter 6-digit code" maxlength="6" style="text-transform: uppercase;">
+            </div>
+            <div class="input-group">
+                <label for="usernameInput">Your Name:</label>
+                <input type="text" id="usernameInput" placeholder="Enter your name" maxlength="20">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-button primary" onclick="joinGame()">
+                    Join Game
+                </button>
+                <button class="modal-button secondary" onclick="closeModal('guestModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Handle Host button click
+        function handleHostClick() {
+            // Generate game code
+            const gameCode = gameManager.createGame();
+            document.getElementById('gameCodeDisplay').textContent = gameCode;
+            
+            // Create shareable URL
+            const shareableUrl = window.location.href + '?game=' + gameCode;
+            
+            // Update modal content to include shareable link
+            const modalContent = document.querySelector('#hostModal .modal-content');
+            const shareSection = document.createElement('div');
+            shareSection.innerHTML = `
+                <div style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 10px;">
+                    <p style="margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Share this link with players:</p>
+                    <input type="text" value="${shareableUrl}" readonly style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 0.9rem; background: white;">
+                    <button onclick="copyToClipboard('${shareableUrl}')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #4285f4; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                        Copy Link
+                    </button>
+                </div>
+            `;
+            
+            // Remove existing share section if any
+            const existingShare = modalContent.querySelector('.share-section');
+            if (existingShare) {
+                existingShare.remove();
+            }
+            
+            shareSection.classList.add('share-section');
+            modalContent.appendChild(shareSection);
+            
+            document.getElementById('hostModal').style.display = 'block';
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Link copied to clipboard!');
+            });
+        }
+
+        // Handle Guest button click
+        function handleGuestClick() {
+            // Check if there's a game code in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameCodeFromUrl = urlParams.get('game');
+            
+            if (gameCodeFromUrl) {
+                // Auto-fill the game code
+                document.getElementById('gameCodeInput').value = gameCodeFromUrl.toUpperCase();
+                document.getElementById('gameCodeInput').readOnly = true;
+                document.getElementById('usernameInput').focus();
+            } else {
+                // Clear and enable game code input
+                document.getElementById('gameCodeInput').value = '';
+                document.getElementById('gameCodeInput').readOnly = false;
+                document.getElementById('gameCodeInput').focus();
+            }
+            
+            document.getElementById('guestModal').style.display = 'block';
+        }
+
+        // Start hosting (redirect to number caller)
+        function startHosting() {
+            // Store game code for numberCaller page
+            localStorage.setItem('housie_game_code', gameManager.gameCode);
+            closeModal('hostModal');
+            window.location.href = 'numberCaller.html';
+        }
+
+        // Join game
+        function joinGame() {
+            const gameCode = document.getElementById('gameCodeInput').value.trim().toUpperCase();
+            const username = document.getElementById('usernameInput').value.trim();
+
+            if (!gameCode || gameCode.length !== 6) {
+                alert('Please enter a valid 6-digit game code');
+                return;
+            }
+
+            if (!username) {
+                alert('Please enter your name');
+                return;
+            }
+
+            try {
+                console.log('Attempting to join game:', gameCode);
+                console.log('Username:', username);
+                
+                // Check if game exists first
+                const gameData = localStorage.getItem(`housie_game_${gameCode}`) || sessionStorage.getItem(`housie_game_${gameCode}`);
+                console.log('Game data found:', gameData);
+                
+                if (!gameData) {
+                    alert('Game not found. Please check the game code and make sure the host has created the game.\n\nNote: If testing with incognito mode, try using regular browser windows instead.');
+                    return;
+                }
+                
+                gameManager.joinGame(gameCode, username);
+                closeModal('guestModal');
+                window.location.href = 'ticket.html';
+            } catch (error) {
+                console.error('Join game error:', error);
+                alert('Error joining game: ' + error.message);
+            }
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            if (modalId === 'guestModal') {
+                document.getElementById('gameCodeInput').value = '';
+                document.getElementById('usernameInput').value = '';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const hostModal = document.getElementById('hostModal');
+            const guestModal = document.getElementById('guestModal');
+            
+            if (event.target === hostModal) {
+                closeModal('hostModal');
+            }
+            if (event.target === guestModal) {
+                closeModal('guestModal');
+            }
+        }
+
+        // Handle Enter key in input fields
         document.addEventListener('DOMContentLoaded', function() {
-            // Add parallax effect to floating elements
-            window.addEventListener('scroll', function() {
-                const scrolled = window.pageYOffset;
-                const floatingElements = document.querySelectorAll('.floating-element');
-                floatingElements.forEach((element, index) => {
-                    const speed = 0.3 + (index * 0.1);
-                    element.style.transform = `translateY(${scrolled * speed}px)`;
-                });
+            document.getElementById('gameCodeInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('usernameInput').focus();
+                }
+            });
+
+            document.getElementById('usernameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    joinGame();
+                }
             });
         });
     </script>

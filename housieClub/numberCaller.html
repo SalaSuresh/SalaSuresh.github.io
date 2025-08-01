@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Caller</title>
+    <title>Number Caller - Housie Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/gameManager.js"></script>
     <style>
         body, button, .number-button, #called-number, #call-button, #reset-button {
             font-family: 'Manrope', Arial, sans-serif;
@@ -399,9 +400,116 @@
                 font-size: 22px;
             }
         }
+
+        /* Game Info Panel */
+        .game-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 300px;
+            z-index: 100;
+        }
+
+        .game-code {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .players-list {
+            margin-top: 1rem;
+        }
+
+        .players-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .player-item {
+            background: #f7fafc;
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .player-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #48bb78;
+        }
+
+        .no-players {
+            color: #a0aec0;
+            font-style: italic;
+            font-size: 0.8rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
+
+<a href="index.html" class="back-button">
+    <span class="material-icons">arrow_back</span>
+    Back to Lobby
+</a>
+
+<!-- Game Info Panel -->
+<div class="game-info" id="gameInfo">
+    <div class="game-code" id="gameCodeDisplay">
+        Loading...
+    </div>
+    <div class="players-list">
+        <div class="players-title">Connected Players</div>
+        <div id="playersList">
+            <div class="no-players">No players connected yet</div>
+        </div>
+    </div>
+</div>
 
 <div class="horizontal-layout">
     <div class="grid-layout" id="numberLayout" aria-label="Number grid"></div>
@@ -419,13 +527,60 @@
     let lastCalledIndex = null;
     let speechSynth = window.speechSynthesis;
     let voices = [];
+    let playerUpdateInterval = null;
+
+    // Initialize game as host
+    function initializeHost() {
+        // Check if we have a game code (should be set from index page)
+        const gameCode = localStorage.getItem('housie_game_code');
+        if (gameCode) {
+            gameManager.gameCode = gameCode;
+            gameManager.isHost = true;
+            displayGameCode();
+            startPlayerTracking();
+        } else {
+            // If no game code, redirect back to lobby
+            alert('No game found. Please start a new game from the lobby.');
+            window.location.href = 'index.html';
+        }
+    }
+
+    // Display game code
+    function displayGameCode() {
+        const gameCodeElement = document.getElementById('gameCodeDisplay');
+        if (gameCodeElement) {
+            gameCodeElement.textContent = gameManager.gameCode;
+        }
+    }
+
+    // Start tracking players
+    function startPlayerTracking() {
+        // Update players list every 3 seconds
+        playerUpdateInterval = setInterval(updatePlayersList, 3000);
+        updatePlayersList(); // Initial update
+    }
+
+    // Update players list
+    function updatePlayersList() {
+        const playersListElement = document.getElementById('playersList');
+        const players = gameManager.getPlayers();
+        
+        if (players.length === 0) {
+            playersListElement.innerHTML = '<div class="no-players">No players connected yet</div>';
+        } else {
+            playersListElement.innerHTML = players.map(player => `
+                <div class="player-item">
+                    <div class="player-status"></div>
+                    ${player.username}
+                </div>
+            `).join('');
+        }
+    }
 
     // Initialize speech synthesis
     function initSpeech() {
-        // Wait for voices to load
         speechSynth.onvoiceschanged = function() {
             voices = speechSynth.getVoices();
-            // Try to find a good English voice
             let preferredVoice = voices.find(voice => 
                 voice.lang.includes('en') && voice.name.includes('Google')
             ) || voices.find(voice => 
@@ -441,16 +596,15 @@
     // Speak the number
     function speakNumber(number) {
         if (speechSynth && speechSynth.speaking) {
-            speechSynth.cancel(); // Stop current speech
+            speechSynth.cancel();
         }
 
         const utterance = new SpeechSynthesisUtterance();
         utterance.text = `Number ${number}`;
-        utterance.rate = 0.8; // Slightly slower for clarity
+        utterance.rate = 0.8;
         utterance.pitch = 1.0;
         utterance.volume = 0.8;
 
-        // Try to use a good English voice
         if (voices.length > 0) {
             let preferredVoice = voices.find(voice => 
                 voice.lang.includes('en') && voice.name.includes('Google')
@@ -492,7 +646,7 @@
             button.textContent = number < 10 ? '0' + number : number;
             button.dataset.index = index;
             button.setAttribute('aria-label', `Number ${number}`);
-            button.disabled = true; // prevent manual clicking
+            button.disabled = true;
             numberLayout.appendChild(button);
         });
     }
@@ -512,6 +666,9 @@
                 document.getElementById("call-button").disabled = true;
                 document.getElementById("call-button").style.backgroundColor = '#aaa';
                 document.getElementById("call-button").style.cursor = 'not-allowed';
+                
+                // End the game
+                gameManager.endGame();
                 
                 // Speak game over
                 setTimeout(() => {
@@ -547,13 +704,25 @@
             speechSynth.cancel();
         }
         
+        // Clear game data
+        gameManager.clearGameData();
+        
         showNumberLayout();
     }
 
-    // Initialize speech synthesis when page loads
+    // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
         initSpeech();
+        initializeHost();
         showNumberLayout();
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (playerUpdateInterval) {
+            clearInterval(playerUpdateInterval);
+        }
+        gameManager.stopPolling();
     });
 </script>
 
