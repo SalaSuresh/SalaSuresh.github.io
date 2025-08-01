@@ -58,13 +58,19 @@ class GameManager {
     // Join game (Guest)
     joinGame(gameCode, username) {
         try {
+            console.log('=== GUEST JOINING GAME ===');
+            console.log('Game Code:', gameCode);
+            console.log('Username:', username);
+            
             this.isHost = false;
             this.gameCode = gameCode.toUpperCase();
             
             // Check if game exists - try both localStorage and sessionStorage
             let gameData = this.getGameData();
+            console.log('Existing game data found:', gameData);
             
             if (!gameData) {
+                console.log('No existing game data found - creating minimal data for guest');
                 // Try to create a minimal game data if it doesn't exist
                 // This allows guests to join even if the host's data isn't shared
                 const minimalGameData = {
@@ -78,6 +84,7 @@ class GameManager {
                 
                 this.saveGameData(minimalGameData);
                 gameData = minimalGameData;
+                console.log('Created minimal game data for guest');
             }
             
             if (gameData.gameState === 'finished') {
@@ -94,14 +101,21 @@ class GameManager {
                 id: Date.now() + Math.random(),
                 username: username,
                 joinedAt: new Date().toISOString(),
-                isActive: true
+                isActive: true,
+                lastSeen: new Date().toISOString()
             };
 
             if (!gameData.players) {
                 gameData.players = [];
             }
             
+            console.log('Adding player to game:', player);
+            console.log('Current players before adding:', gameData.players);
+            
             gameData.players.push(player);
+            gameData.lastUpdated = new Date().toISOString();
+            
+            console.log('Updated game data:', gameData);
             this.saveGameData(gameData);
             
             // Store player info locally
@@ -112,6 +126,7 @@ class GameManager {
             localStorage.setItem('housie_game_code', this.gameCode);
             sessionStorage.setItem('housie_game_code', this.gameCode);
             
+            console.log('Player successfully joined game');
             return true;
         } catch (error) {
             console.error('Error joining game:', error);
@@ -183,10 +198,17 @@ class GameManager {
     // Update game data (Host)
     updateGameData() {
         try {
+            console.log('=== HOST UPDATING GAME DATA ===');
             const gameData = this.getGameData();
+            console.log('Current game data:', gameData);
+            
             if (gameData) {
                 gameData.lastUpdated = new Date().toISOString();
+                console.log('Updating lastUpdated timestamp');
                 this.saveGameData(gameData);
+                console.log('Game data updated and saved');
+            } else {
+                console.log('No game data found to update');
             }
         } catch (error) {
             console.error('Error updating game data:', error);
