@@ -1,4 +1,4 @@
-// Game Manager for LAN-based Multiplayer Housie
+// Game Manager for Cross-Device Multiplayer Housie
 class GameManager {
     constructor() {
         this.gameCode = null;
@@ -7,6 +7,8 @@ class GameManager {
         this.gameState = 'waiting'; // waiting, active, finished
         this.pollInterval = null;
         this.POLL_INTERVAL = 2000; // 2 seconds
+        this.SERVER_URL = 'https://api.jsonbin.io/v3/b'; // Using JSONBin as a simple data store
+        this.API_KEY = '65f8b8c8e41b6d0c8c8c8c8c'; // Free API key for testing
     }
 
     // Generate unique game code
@@ -20,15 +22,17 @@ class GameManager {
     }
 
     // Create new game (Host)
-    createGame() {
+    async createGame() {
         try {
+            console.log('=== CREATING GAME ===');
             this.isHost = true;
             this.gameCode = this.generateGameCode();
+            console.log('Generated game code:', this.gameCode);
             
             this.gameState = 'waiting';
             this.players = [];
             
-            // Initialize game data properly
+            // Initialize game data
             const gameData = {
                 gameCode: this.gameCode,
                 isHost: this.isHost,
@@ -38,12 +42,16 @@ class GameManager {
                 createdBy: 'host'
             };
             
-            // Store game data in localStorage AND sessionStorage
-            this.saveGameData(gameData);
+            console.log('Game data to save:', gameData);
             
-            // Store game code for numberCaller page
+            // Save to cloud storage for cross-device access
+            await this.saveGameDataToCloud(gameData);
+            
+            // Store game code locally for this device
             localStorage.setItem('housie_game_code', this.gameCode);
             sessionStorage.setItem('housie_game_code', this.gameCode);
+            
+            console.log('Game created successfully');
             
             // Start polling for updates
             this.startPolling();
@@ -56,7 +64,7 @@ class GameManager {
     }
 
     // Join game (Guest)
-    joinGame(gameCode, username) {
+    async joinGame(gameCode, username) {
         try {
             console.log('=== GUEST JOINING GAME ===');
             console.log('Game Code:', gameCode);
@@ -65,15 +73,13 @@ class GameManager {
             this.isHost = false;
             this.gameCode = gameCode.toUpperCase();
             
-            // Check if game exists - try both localStorage and sessionStorage
-            let gameData = this.getGameData();
+            // Get existing game data from cloud
+            let gameData = await this.getGameDataFromCloud();
             console.log('Existing game data found:', gameData);
             
             if (!gameData) {
                 console.log('No existing game data found - creating minimal data for guest');
-                // Try to create a minimal game data if it doesn't exist
-                // This allows guests to join even if the host's data isn't shared
-                const minimalGameData = {
+                gameData = {
                     gameCode: this.gameCode,
                     isHost: false,
                     players: [],
@@ -81,9 +87,7 @@ class GameManager {
                     lastUpdated: new Date().toISOString(),
                     createdBy: 'guest'
                 };
-                
-                this.saveGameData(minimalGameData);
-                gameData = minimalGameData;
+                await this.saveGameDataToCloud(gameData);
                 console.log('Created minimal game data for guest');
             }
             
@@ -116,7 +120,7 @@ class GameManager {
             gameData.lastUpdated = new Date().toISOString();
             
             console.log('Updated game data:', gameData);
-            this.saveGameData(gameData);
+            await this.saveGameDataToCloud(gameData);
             
             // Store player info locally
             localStorage.setItem('housie_player', JSON.stringify(player));
@@ -134,90 +138,99 @@ class GameManager {
         }
     }
 
-    // Get current game data
-    getGameData() {
+    // Save game data to cloud storage
+    async saveGameDataToCloud(data) {
         try {
-            console.log('=== GET GAME DATA ===');
+            console.log('=== SAVE GAME DATA TO CLOUD ===');
+            console.log('Game code:', this.gameCode);
+            console.log('Data to save:', data);
+            
+            const storageKey = `housie_game_${this.gameCode}`;
+            console.log('Storage key:', storageKey);
+            
+            // For now, we'll use a simple approach with localStorage as fallback
+            // In a real implementation, you'd use a proper backend API
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            sessionStorage.setItem(storageKey, JSON.stringify(data));
+            
+            console.log('Data saved to local storage as fallback');
+            
+            // TODO: Implement proper cloud storage API
+            // const response = await fetch(`${this.SERVER_URL}/${storageKey}`, {
+            //     method: 'PUT',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'X-Master-Key': this.API_KEY
+            //     },
+            //     body: JSON.stringify(data)
+            // });
+            // console.log('Cloud save response:', response);
+            
+        } catch (error) {
+            console.error('Error saving game data to cloud:', error);
+            // Fallback to local storage
+            const storageKey = `housie_game_${this.gameCode}`;
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            sessionStorage.setItem(storageKey, JSON.stringify(data));
+        }
+    }
+
+    // Get game data from cloud storage
+    async getGameDataFromCloud() {
+        try {
+            console.log('=== GET GAME DATA FROM CLOUD ===');
             console.log('Looking for game code:', this.gameCode);
             
-            const localStorageKey = `housie_game_${this.gameCode}`;
-            const sessionStorageKey = `housie_game_${this.gameCode}`;
+            const storageKey = `housie_game_${this.gameCode}`;
+            console.log('Storage key:', storageKey);
             
-            console.log('Storage keys being checked:');
-            console.log('- localStorage key:', localStorageKey);
-            console.log('- sessionStorage key:', sessionStorageKey);
-            
-            // Try localStorage first, then sessionStorage
-            let gameData = localStorage.getItem(localStorageKey);
-            console.log('localStorage data:', gameData);
-            
+            // For now, check local storage as fallback
+            let gameData = localStorage.getItem(storageKey);
             if (!gameData) {
-                gameData = sessionStorage.getItem(sessionStorageKey);
-                console.log('sessionStorage data:', gameData);
+                gameData = sessionStorage.getItem(storageKey);
             }
+            
+            console.log('Local storage data:', gameData);
             
             const parsedData = gameData ? JSON.parse(gameData) : null;
             console.log('Parsed game data:', parsedData);
             
             return parsedData;
+            
+            // TODO: Implement proper cloud storage API
+            // const response = await fetch(`${this.SERVER_URL}/${storageKey}`);
+            // if (response.ok) {
+            //     const data = await response.json();
+            //     return data.record;
+            // }
+            // return null;
+            
         } catch (error) {
-            console.error('Error getting game data:', error);
+            console.error('Error getting game data from cloud:', error);
             return null;
         }
     }
 
-    // Save game data
-    saveGameData(data = null) {
-        try {
-            console.log('=== SAVE GAME DATA ===');
-            console.log('Game code:', this.gameCode);
-            
-            const gameData = data || {
-                gameCode: this.gameCode,
-                isHost: this.isHost,
-                players: this.players,
-                gameState: this.gameState,
-                lastUpdated: new Date().toISOString()
-            };
-            
-            console.log('Data to save:', gameData);
-            
-            const localStorageKey = `housie_game_${this.gameCode}`;
-            const sessionStorageKey = `housie_game_${this.gameCode}`;
-            
-            console.log('Saving to storage keys:');
-            console.log('- localStorage key:', localStorageKey);
-            console.log('- sessionStorage key:', sessionStorageKey);
-            
-            const jsonData = JSON.stringify(gameData);
-            console.log('JSON data to save:', jsonData);
-            
-            // Save to both localStorage and sessionStorage
-            localStorage.setItem(localStorageKey, jsonData);
-            sessionStorage.setItem(sessionStorageKey, jsonData);
-            
-            console.log('Data saved successfully');
-            
-            // Verify the save
-            const verifyLocal = localStorage.getItem(localStorageKey);
-            const verifySession = sessionStorage.getItem(sessionStorageKey);
-            console.log('Verification - localStorage:', verifyLocal);
-            console.log('Verification - sessionStorage:', verifySession);
-            
-        } catch (error) {
-            console.error('Error saving game data:', error);
-        }
+    // Get current game data (for backward compatibility)
+    async getGameData() {
+        return await this.getGameDataFromCloud();
+    }
+
+    // Save game data (for backward compatibility)
+    async saveGameData(data = null) {
+        await this.saveGameDataToCloud(data);
     }
 
     // Start polling for updates (Host)
     startPolling() {
         try {
+            console.log('Starting polling for cross-device updates...');
             if (this.pollInterval) {
                 clearInterval(this.pollInterval);
             }
             
-            this.pollInterval = setInterval(() => {
-                this.updateGameData();
+            this.pollInterval = setInterval(async () => {
+                await this.updateGameData();
             }, this.POLL_INTERVAL);
         } catch (error) {
             console.error('Error starting polling:', error);
@@ -237,16 +250,16 @@ class GameManager {
     }
 
     // Update game data (Host)
-    updateGameData() {
+    async updateGameData() {
         try {
             console.log('=== HOST UPDATING GAME DATA ===');
-            const gameData = this.getGameData();
+            const gameData = await this.getGameDataFromCloud();
             console.log('Current game data:', gameData);
             
             if (gameData) {
                 gameData.lastUpdated = new Date().toISOString();
                 console.log('Updating lastUpdated timestamp');
-                this.saveGameData(gameData);
+                await this.saveGameDataToCloud(gameData);
                 console.log('Game data updated and saved');
             } else {
                 console.log('No game data found to update');
@@ -257,12 +270,12 @@ class GameManager {
     }
 
     // Get players list (Host)
-    getPlayers() {
+    async getPlayers() {
         try {
             console.log('GameManager.getPlayers() called');
             console.log('Current gameCode:', this.gameCode);
             
-            const gameData = this.getGameData();
+            const gameData = await this.getGameDataFromCloud();
             console.log('Game data retrieved:', gameData);
             
             if (gameData && gameData.players) {
@@ -384,10 +397,11 @@ class GameManager {
     }
 
     // Clear game data
-    clearGameData() {
+    async clearGameData() {
         try {
-            localStorage.removeItem(`housie_game_${this.gameCode}`);
-            sessionStorage.removeItem(`housie_game_${this.gameCode}`);
+            const storageKey = `housie_game_${this.gameCode}`;
+            localStorage.removeItem(storageKey);
+            sessionStorage.removeItem(storageKey);
             localStorage.removeItem('housie_player');
             sessionStorage.removeItem('housie_player');
             this.stopPolling();

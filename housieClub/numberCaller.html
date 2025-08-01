@@ -571,7 +571,7 @@
     }
 
     // Update players list
-    function updatePlayersList() {
+    async function updatePlayersList() {
         console.log('=== UPDATE PLAYERS LIST ===');
         console.log('GameManager state:', {
             gameCode: gameManager.gameCode,
@@ -582,7 +582,7 @@
         gameManager.debugStorage();
         
         const playersListElement = document.getElementById('playersList');
-        const players = gameManager.getPlayers();
+        const players = await gameManager.getPlayers();
         
         console.log('Retrieved players:', players);
         

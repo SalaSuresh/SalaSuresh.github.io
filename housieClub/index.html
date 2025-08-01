@@ -467,37 +467,42 @@
 
     <script>
         // Handle Host button click
-        function handleHostClick() {
-            // Generate game code
-            const gameCode = gameManager.createGame();
-            document.getElementById('gameCodeDisplay').textContent = gameCode;
-            
-            // Create shareable URL
-            const shareableUrl = window.location.href + '?game=' + gameCode;
-            
-            // Update modal content to include shareable link
-            const modalContent = document.querySelector('#hostModal .modal-content');
-            const shareSection = document.createElement('div');
-            shareSection.innerHTML = `
-                <div style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 10px;">
-                    <p style="margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Share this link with players:</p>
-                    <input type="text" value="${shareableUrl}" readonly style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 0.9rem; background: white;">
-                    <button onclick="copyToClipboard('${shareableUrl}')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #4285f4; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                        Copy Link
-                    </button>
-                </div>
-            `;
-            
-            // Remove existing share section if any
-            const existingShare = modalContent.querySelector('.share-section');
-            if (existingShare) {
-                existingShare.remove();
+        async function handleHostClick() {
+            try {
+                // Generate game code
+                const gameCode = await gameManager.createGame();
+                document.getElementById('gameCodeDisplay').textContent = gameCode;
+                
+                // Create shareable URL
+                const shareableUrl = window.location.href + '?game=' + gameCode;
+                
+                // Update modal content to include shareable link
+                const modalContent = document.querySelector('#hostModal .modal-content');
+                const shareSection = document.createElement('div');
+                shareSection.innerHTML = `
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 10px;">
+                        <p style="margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Share this link with players:</p>
+                        <input type="text" value="${shareableUrl}" readonly style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 0.9rem; background: white;">
+                        <button onclick="copyToClipboard('${shareableUrl}')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #4285f4; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                            Copy Link
+                        </button>
+                    </div>
+                `;
+                
+                // Remove existing share section if any
+                const existingShare = modalContent.querySelector('.share-section');
+                if (existingShare) {
+                    existingShare.remove();
+                }
+                
+                shareSection.classList.add('share-section');
+                modalContent.appendChild(shareSection);
+                
+                document.getElementById('hostModal').style.display = 'block';
+            } catch (error) {
+                console.error('Error creating game:', error);
+                alert('Error creating game: ' + error.message);
             }
-            
-            shareSection.classList.add('share-section');
-            modalContent.appendChild(shareSection);
-            
-            document.getElementById('hostModal').style.display = 'block';
         }
 
         // Copy to clipboard function
@@ -546,7 +551,7 @@
         }
 
         // Join game
-        function joinGame() {
+        async function joinGame() {
             const gameCode = document.getElementById('gameCodeInput').value.trim().toUpperCase();
             const username = document.getElementById('usernameInput').value.trim();
 
@@ -571,7 +576,7 @@
                 // Let gameManager handle the join process
                 // It will create minimal game data if none exists
                 console.log('Calling gameManager.joinGame...');
-                const result = gameManager.joinGame(gameCode, username);
+                const result = await gameManager.joinGame(gameCode, username);
                 console.log('Join result:', result);
                 
                 console.log('Redirecting to ticket.html...');
