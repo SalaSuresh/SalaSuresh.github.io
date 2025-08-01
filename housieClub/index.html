@@ -550,6 +550,10 @@
             const gameCode = document.getElementById('gameCodeInput').value.trim().toUpperCase();
             const username = document.getElementById('usernameInput').value.trim();
 
+            console.log('=== JOIN GAME PROCESS START ===');
+            console.log('Game Code:', gameCode);
+            console.log('Username:', username);
+
             if (!gameCode || gameCode.length !== 6) {
                 alert('Please enter a valid 6-digit game code');
                 return;
@@ -561,23 +565,21 @@
             }
 
             try {
-                console.log('Attempting to join game:', gameCode);
-                console.log('Username:', username);
+                console.log('GameManager available:', typeof gameManager);
+                console.log('GameManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(gameManager)));
                 
-                // Check if game exists first
-                const gameData = localStorage.getItem(`housie_game_${gameCode}`) || sessionStorage.getItem(`housie_game_${gameCode}`);
-                console.log('Game data found:', gameData);
+                // Let gameManager handle the join process
+                // It will create minimal game data if none exists
+                console.log('Calling gameManager.joinGame...');
+                const result = gameManager.joinGame(gameCode, username);
+                console.log('Join result:', result);
                 
-                if (!gameData) {
-                    alert('Game not found. Please check the game code and make sure the host has created the game.\n\nNote: If testing with incognito mode, try using regular browser windows instead.');
-                    return;
-                }
-                
-                gameManager.joinGame(gameCode, username);
+                console.log('Redirecting to ticket.html...');
                 closeModal('guestModal');
                 window.location.href = 'ticket.html';
             } catch (error) {
                 console.error('Join game error:', error);
+                console.error('Error stack:', error.stack);
                 alert('Error joining game: ' + error.message);
             }
         }
@@ -606,6 +608,14 @@
 
         // Handle Enter key in input fields
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if gameManager is loaded
+            if (typeof gameManager === 'undefined') {
+                console.error('GameManager not loaded!');
+                alert('Game system not loaded. Please refresh the page.');
+                return;
+            }
+            console.log('GameManager loaded successfully');
+            
             document.getElementById('gameCodeInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     document.getElementById('usernameInput').focus();
