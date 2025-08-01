@@ -578,6 +578,9 @@
             isHost: gameManager.isHost
         });
         
+        // Debug storage to see what's actually stored
+        gameManager.debugStorage();
+        
         const playersListElement = document.getElementById('playersList');
         const players = gameManager.getPlayers();
         

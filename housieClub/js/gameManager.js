@@ -137,12 +137,29 @@ class GameManager {
     // Get current game data
     getGameData() {
         try {
+            console.log('=== GET GAME DATA ===');
+            console.log('Looking for game code:', this.gameCode);
+            
+            const localStorageKey = `housie_game_${this.gameCode}`;
+            const sessionStorageKey = `housie_game_${this.gameCode}`;
+            
+            console.log('Storage keys being checked:');
+            console.log('- localStorage key:', localStorageKey);
+            console.log('- sessionStorage key:', sessionStorageKey);
+            
             // Try localStorage first, then sessionStorage
-            let gameData = localStorage.getItem(`housie_game_${this.gameCode}`);
+            let gameData = localStorage.getItem(localStorageKey);
+            console.log('localStorage data:', gameData);
+            
             if (!gameData) {
-                gameData = sessionStorage.getItem(`housie_game_${this.gameCode}`);
+                gameData = sessionStorage.getItem(sessionStorageKey);
+                console.log('sessionStorage data:', gameData);
             }
-            return gameData ? JSON.parse(gameData) : null;
+            
+            const parsedData = gameData ? JSON.parse(gameData) : null;
+            console.log('Parsed game data:', parsedData);
+            
+            return parsedData;
         } catch (error) {
             console.error('Error getting game data:', error);
             return null;
@@ -152,6 +169,9 @@ class GameManager {
     // Save game data
     saveGameData(data = null) {
         try {
+            console.log('=== SAVE GAME DATA ===');
+            console.log('Game code:', this.gameCode);
+            
             const gameData = data || {
                 gameCode: this.gameCode,
                 isHost: this.isHost,
@@ -160,9 +180,30 @@ class GameManager {
                 lastUpdated: new Date().toISOString()
             };
             
+            console.log('Data to save:', gameData);
+            
+            const localStorageKey = `housie_game_${this.gameCode}`;
+            const sessionStorageKey = `housie_game_${this.gameCode}`;
+            
+            console.log('Saving to storage keys:');
+            console.log('- localStorage key:', localStorageKey);
+            console.log('- sessionStorage key:', sessionStorageKey);
+            
+            const jsonData = JSON.stringify(gameData);
+            console.log('JSON data to save:', jsonData);
+            
             // Save to both localStorage and sessionStorage
-            localStorage.setItem(`housie_game_${this.gameCode}`, JSON.stringify(gameData));
-            sessionStorage.setItem(`housie_game_${this.gameCode}`, JSON.stringify(gameData));
+            localStorage.setItem(localStorageKey, jsonData);
+            sessionStorage.setItem(sessionStorageKey, jsonData);
+            
+            console.log('Data saved successfully');
+            
+            // Verify the save
+            const verifyLocal = localStorage.getItem(localStorageKey);
+            const verifySession = sessionStorage.getItem(sessionStorageKey);
+            console.log('Verification - localStorage:', verifyLocal);
+            console.log('Verification - sessionStorage:', verifySession);
+            
         } catch (error) {
             console.error('Error saving game data:', error);
         }
@@ -319,6 +360,26 @@ class GameManager {
         } catch (error) {
             console.error('Error getting current player:', error);
             return {};
+        }
+    }
+
+    // Debug function to list all storage keys
+    debugStorage() {
+        console.log('=== DEBUG STORAGE ===');
+        console.log('All localStorage keys:');
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('housie_')) {
+                console.log(`- ${key}:`, localStorage.getItem(key));
+            }
+        }
+        
+        console.log('All sessionStorage keys:');
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key && key.startsWith('housie_')) {
+                console.log(`- ${key}:`, sessionStorage.getItem(key));
+            }
         }
     }
 
