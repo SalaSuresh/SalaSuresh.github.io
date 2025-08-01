@@ -531,15 +531,24 @@
 
     // Initialize game as host
     function initializeHost() {
+        console.log('=== INITIALIZE HOST ===');
+        
         // Check if we have a game code (should be set from index page)
-        const gameCode = localStorage.getItem('housie_game_code');
+        const gameCode = localStorage.getItem('housie_game_code') || sessionStorage.getItem('housie_game_code');
+        console.log('Retrieved game code:', gameCode);
+        
         if (gameCode) {
             gameManager.gameCode = gameCode;
             gameManager.isHost = true;
+            console.log('GameManager configured:', {
+                gameCode: gameManager.gameCode,
+                isHost: gameManager.isHost
+            });
             displayGameCode();
             startPlayerTracking();
         } else {
             // If no game code, redirect back to lobby
+            console.error('No game code found in storage');
             alert('No game found. Please start a new game from the lobby.');
             window.location.href = 'index.html';
         }
@@ -555,6 +564,7 @@
 
     // Start tracking players
     function startPlayerTracking() {
+        console.log('Starting player tracking...');
         // Update players list every 3 seconds
         playerUpdateInterval = setInterval(updatePlayersList, 3000);
         updatePlayersList(); // Initial update
@@ -562,8 +572,16 @@
 
     // Update players list
     function updatePlayersList() {
+        console.log('=== UPDATE PLAYERS LIST ===');
+        console.log('GameManager state:', {
+            gameCode: gameManager.gameCode,
+            isHost: gameManager.isHost
+        });
+        
         const playersListElement = document.getElementById('playersList');
         const players = gameManager.getPlayers();
+        
+        console.log('Retrieved players:', players);
         
         if (players.length === 0) {
             playersListElement.innerHTML = '<div class="no-players">No players connected yet</div>';

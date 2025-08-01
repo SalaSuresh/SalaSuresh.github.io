@@ -196,8 +196,19 @@ class GameManager {
     // Get players list (Host)
     getPlayers() {
         try {
+            console.log('GameManager.getPlayers() called');
+            console.log('Current gameCode:', this.gameCode);
+            
             const gameData = this.getGameData();
-            return gameData ? gameData.players : [];
+            console.log('Game data retrieved:', gameData);
+            
+            if (gameData && gameData.players) {
+                console.log('Players found:', gameData.players);
+                return gameData.players;
+            } else {
+                console.log('No players found in game data');
+                return [];
+            }
         } catch (error) {
             console.error('Error getting players:', error);
             return [];
