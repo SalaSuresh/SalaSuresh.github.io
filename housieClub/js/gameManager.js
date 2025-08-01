@@ -7,8 +7,9 @@ class GameManager {
         this.gameState = 'waiting'; // waiting, active, finished
         this.pollInterval = null;
         this.POLL_INTERVAL = 2000; // 2 seconds
-        // Using a different approach - we'll create a simple shared storage
-        this.SHARED_STORAGE_KEY = 'housie_shared_games';
+        // Using a simple polling approach with a free API
+        this.API_BASE = 'https://api.myjson.com/v1/json';
+        this.API_KEY = 'demo'; // Free API key
     }
 
     // Generate unique game code
@@ -141,82 +142,73 @@ class GameManager {
     // Save game data to cloud storage
     async saveGameDataToCloud(data) {
         try {
-            console.log('=== SAVE GAME DATA TO SHARED STORAGE ===');
+            console.log('=== SAVE GAME DATA TO CLOUD ===');
             console.log('Game code:', this.gameCode);
             console.log('Data to save:', data);
             
-            const storageKey = `housie_game_${this.gameCode}`;
+            // Create a unique storage key for this game
+            const storageKey = `housie_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // Get existing shared games data
-            let sharedGames = JSON.parse(localStorage.getItem(this.SHARED_STORAGE_KEY) || '{}');
-            console.log('Existing shared games:', sharedGames);
-            
-            // Add/update this game in shared storage
-            sharedGames[this.gameCode] = data;
-            
-            // Save back to shared storage
-            localStorage.setItem(this.SHARED_STORAGE_KEY, JSON.stringify(sharedGames));
-            console.log('Data saved to shared storage successfully');
-            
-            // Also save to individual storage for fallback
+            // For now, we'll use a simple approach with localStorage as fallback
+            // In a real implementation, you'd use a proper backend API
             localStorage.setItem(storageKey, JSON.stringify(data));
             sessionStorage.setItem(storageKey, JSON.stringify(data));
-            console.log('Data also saved to individual storage');
+            
+            console.log('Data saved to local storage as fallback');
+            
+            // TODO: Implement proper cloud storage API
+            // const response = await fetch(`${this.API_BASE}/${storageKey}`, {
+            //     method: 'PUT',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(data)
+            // });
+            // console.log('Cloud save response:', response);
             
         } catch (error) {
-            console.error('Error saving game data to shared storage:', error);
+            console.error('Error saving game data to cloud:', error);
             // Fallback to local storage
-            const storageKey = `housie_game_${this.gameCode}`;
+            const storageKey = `housie_${this.gameCode}`;
             localStorage.setItem(storageKey, JSON.stringify(data));
             sessionStorage.setItem(storageKey, JSON.stringify(data));
-            console.log('Data saved to local storage as fallback');
         }
     }
 
     // Get game data from cloud storage
     async getGameDataFromCloud() {
         try {
-            console.log('=== GET GAME DATA FROM SHARED STORAGE ===');
+            console.log('=== GET GAME DATA FROM CLOUD ===');
             console.log('Looking for game code:', this.gameCode);
             
-            const storageKey = `housie_game_${this.gameCode}`;
+            const storageKey = `housie_${this.gameCode}`;
             console.log('Storage key:', storageKey);
             
-            // Try to get from shared storage first
-            const sharedGames = JSON.parse(localStorage.getItem(this.SHARED_STORAGE_KEY) || '{}');
-            console.log('Shared games data:', sharedGames);
-            
-            if (sharedGames[this.gameCode]) {
-                const gameData = sharedGames[this.gameCode];
-                console.log('Found game data in shared storage:', gameData);
-                return gameData;
-            } else {
-                console.log('No game data found in shared storage for this game code');
-            }
-            
-            // Fallback to individual storage
+            // For now, check local storage as fallback
             let gameData = localStorage.getItem(storageKey);
             if (!gameData) {
                 gameData = sessionStorage.getItem(storageKey);
             }
             
-            console.log('Individual storage data:', gameData);
+            console.log('Local storage data:', gameData);
             
             const parsedData = gameData ? JSON.parse(gameData) : null;
-            console.log('Parsed game data from individual storage:', parsedData);
+            console.log('Parsed game data:', parsedData);
             
             return parsedData;
             
+            // TODO: Implement proper cloud storage API
+            // const response = await fetch(`${this.API_BASE}/${storageKey}`);
+            // if (response.ok) {
+            //     const data = await response.json();
+            //     return data;
+            // }
+            // return null;
+            
         } catch (error) {
-            console.error('Error getting game data from shared storage:', error);
-            // Fallback to local storage
-            const storageKey = `housie_game_${this.gameCode}`;
-            let gameData = localStorage.getItem(storageKey);
-            if (!gameData) {
-                gameData = sessionStorage.getItem(storageKey);
-            }
-            return gameData ? JSON.parse(gameData) : null;
+            console.error('Error getting game data from cloud:', error);
+            return null;
         }
     }
 
@@ -408,7 +400,7 @@ class GameManager {
     // Clear game data
     async clearGameData() {
         try {
-            const storageKey = `housie_game_${this.gameCode}`;
+            const storageKey = `housie_${this.gameCode}`;
             localStorage.removeItem(storageKey);
             sessionStorage.removeItem(storageKey);
             localStorage.removeItem('housie_player');
