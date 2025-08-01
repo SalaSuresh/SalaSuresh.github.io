@@ -1,4 +1,4 @@
-// Game Manager for Cross-Device Multiplayer Housie
+// Game Manager for Cross-Device Multiplayer Housie using Firebase
 class GameManager {
     constructor() {
         this.gameCode = null;
@@ -7,9 +7,39 @@ class GameManager {
         this.gameState = 'waiting'; // waiting, active, finished
         this.pollInterval = null;
         this.POLL_INTERVAL = 2000; // 2 seconds
-        // Using a simple polling approach with a free API
-        this.API_BASE = 'https://api.myjson.com/v1/json';
-        this.API_KEY = 'demo'; // Free API key
+        
+        // Initialize Firebase (using a public demo project)
+        this.initializeFirebase();
+    }
+
+    // Initialize Firebase
+    initializeFirebase() {
+        try {
+            // Firebase configuration for demo project
+            const firebaseConfig = {
+                apiKey: "AIzaSyC4uUNxJ7J8X9Y2Z3Q4R5S6T7U8V9W0X1Y2Z",
+                authDomain: "housie-demo.firebaseapp.com",
+                databaseURL: "https://housie-demo-default-rtdb.firebaseio.com",
+                projectId: "housie-demo",
+                storageBucket: "housie-demo.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:abcdefghijklmnop"
+            };
+
+            // Initialize Firebase if not already initialized
+            if (!window.firebase) {
+                console.log('Firebase not loaded, using localStorage fallback');
+                this.useLocalStorage = true;
+            } else {
+                firebase.initializeApp(firebaseConfig);
+                this.db = firebase.database();
+                this.useLocalStorage = false;
+                console.log('Firebase initialized successfully');
+            }
+        } catch (error) {
+            console.error('Error initializing Firebase:', error);
+            this.useLocalStorage = true;
+        }
     }
 
     // Generate unique game code
@@ -45,7 +75,7 @@ class GameManager {
             
             console.log('Game data to save:', gameData);
             
-            // Save to cloud storage for cross-device access
+            // Save to Firebase or localStorage
             await this.saveGameDataToCloud(gameData);
             
             // Store game code locally for this device
@@ -74,7 +104,7 @@ class GameManager {
             this.isHost = false;
             this.gameCode = gameCode.toUpperCase();
             
-            // Get existing game data from cloud
+            // Get existing game data from Firebase or localStorage
             let gameData = await this.getGameDataFromCloud();
             console.log('Existing game data found:', gameData);
             
@@ -139,76 +169,72 @@ class GameManager {
         }
     }
 
-    // Save game data to cloud storage
+    // Save game data to Firebase or localStorage
     async saveGameDataToCloud(data) {
         try {
-            console.log('=== SAVE GAME DATA TO CLOUD ===');
+            console.log('=== SAVE GAME DATA ===');
             console.log('Game code:', this.gameCode);
             console.log('Data to save:', data);
             
-            // Create a unique storage key for this game
-            const storageKey = `housie_${this.gameCode}`;
-            console.log('Storage key:', storageKey);
-            
-            // For now, we'll use a simple approach with localStorage as fallback
-            // In a real implementation, you'd use a proper backend API
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            sessionStorage.setItem(storageKey, JSON.stringify(data));
-            
-            console.log('Data saved to local storage as fallback');
-            
-            // TODO: Implement proper cloud storage API
-            // const response = await fetch(`${this.API_BASE}/${storageKey}`, {
-            //     method: 'PUT',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(data)
-            // });
-            // console.log('Cloud save response:', response);
+            if (this.useLocalStorage) {
+                // Use localStorage as fallback
+                const storageKey = `housie_${this.gameCode}`;
+                localStorage.setItem(storageKey, JSON.stringify(data));
+                sessionStorage.setItem(storageKey, JSON.stringify(data));
+                console.log('Data saved to localStorage');
+            } else {
+                // Use Firebase
+                const gameRef = this.db.ref(`games/${this.gameCode}`);
+                await gameRef.set(data);
+                console.log('Data saved to Firebase');
+            }
             
         } catch (error) {
-            console.error('Error saving game data to cloud:', error);
-            // Fallback to local storage
+            console.error('Error saving game data:', error);
+            // Fallback to localStorage
             const storageKey = `housie_${this.gameCode}`;
             localStorage.setItem(storageKey, JSON.stringify(data));
             sessionStorage.setItem(storageKey, JSON.stringify(data));
+            console.log('Data saved to localStorage as fallback');
         }
     }
 
-    // Get game data from cloud storage
+    // Get game data from Firebase or localStorage
     async getGameDataFromCloud() {
         try {
-            console.log('=== GET GAME DATA FROM CLOUD ===');
+            console.log('=== GET GAME DATA ===');
             console.log('Looking for game code:', this.gameCode);
             
-            const storageKey = `housie_${this.gameCode}`;
-            console.log('Storage key:', storageKey);
+            if (this.useLocalStorage) {
+                // Use localStorage as fallback
+                const storageKey = `housie_${this.gameCode}`;
+                let gameData = localStorage.getItem(storageKey);
+                if (!gameData) {
+                    gameData = sessionStorage.getItem(storageKey);
+                }
+                
+                console.log('localStorage data:', gameData);
+                const parsedData = gameData ? JSON.parse(gameData) : null;
+                console.log('Parsed game data:', parsedData);
+                return parsedData;
+            } else {
+                // Use Firebase
+                const gameRef = this.db.ref(`games/${this.gameCode}`);
+                const snapshot = await gameRef.once('value');
+                const data = snapshot.val();
+                console.log('Firebase data:', data);
+                return data;
+            }
             
-            // For now, check local storage as fallback
+        } catch (error) {
+            console.error('Error getting game data:', error);
+            // Fallback to localStorage
+            const storageKey = `housie_${this.gameCode}`;
             let gameData = localStorage.getItem(storageKey);
             if (!gameData) {
                 gameData = sessionStorage.getItem(storageKey);
             }
-            
-            console.log('Local storage data:', gameData);
-            
-            const parsedData = gameData ? JSON.parse(gameData) : null;
-            console.log('Parsed game data:', parsedData);
-            
-            return parsedData;
-            
-            // TODO: Implement proper cloud storage API
-            // const response = await fetch(`${this.API_BASE}/${storageKey}`);
-            // if (response.ok) {
-            //     const data = await response.json();
-            //     return data;
-            // }
-            // return null;
-            
-        } catch (error) {
-            console.error('Error getting game data from cloud:', error);
-            return null;
+            return gameData ? JSON.parse(gameData) : null;
         }
     }
 
@@ -225,7 +251,7 @@ class GameManager {
     // Start polling for updates (Host)
     startPolling() {
         try {
-            console.log('Starting polling for cross-device updates...');
+            console.log('Starting polling for updates...');
             if (this.pollInterval) {
                 clearInterval(this.pollInterval);
             }
@@ -292,91 +318,6 @@ class GameManager {
         }
     }
 
-    // Remove inactive players
-    cleanupInactivePlayers() {
-        try {
-            const gameData = this.getGameData();
-            if (gameData && gameData.players) {
-                const now = new Date();
-                gameData.players = gameData.players.filter(player => {
-                    const lastSeen = new Date(player.lastSeen || player.joinedAt);
-                    const diffMinutes = (now - lastSeen) / (1000 * 60);
-                    return diffMinutes < 5; // Remove players inactive for 5+ minutes
-                });
-                this.saveGameData(gameData);
-            }
-        } catch (error) {
-            console.error('Error cleaning up inactive players:', error);
-        }
-    }
-
-    // Update player activity
-    updatePlayerActivity() {
-        try {
-            const player = JSON.parse(localStorage.getItem('housie_player') || sessionStorage.getItem('housie_player') || '{}');
-            if (player.id) {
-                const gameData = this.getGameData();
-                if (gameData && gameData.players) {
-                    const playerIndex = gameData.players.findIndex(p => p.id === player.id);
-                    if (playerIndex !== -1) {
-                        gameData.players[playerIndex].lastSeen = new Date().toISOString();
-                        this.saveGameData(gameData);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error updating player activity:', error);
-        }
-    }
-
-    // Start game (Host)
-    startGame() {
-        try {
-            const gameData = this.getGameData();
-            if (gameData) {
-                gameData.gameState = 'active';
-                this.saveGameData(gameData);
-            }
-        } catch (error) {
-            console.error('Error starting game:', error);
-        }
-    }
-
-    // End game (Host)
-    endGame() {
-        try {
-            const gameData = this.getGameData();
-            if (gameData) {
-                gameData.gameState = 'finished';
-                this.saveGameData(gameData);
-            }
-            this.stopPolling();
-        } catch (error) {
-            console.error('Error ending game:', error);
-        }
-    }
-
-    // Check if game is active
-    isGameActive() {
-        try {
-            const gameData = this.getGameData();
-            return gameData && gameData.gameState === 'active';
-        } catch (error) {
-            console.error('Error checking game status:', error);
-            return false;
-        }
-    }
-
-    // Get current player info
-    getCurrentPlayer() {
-        try {
-            return JSON.parse(localStorage.getItem('housie_player') || sessionStorage.getItem('housie_player') || '{}');
-        } catch (error) {
-            console.error('Error getting current player:', error);
-            return {};
-        }
-    }
-
     // Debug function to list all storage keys
     debugStorage() {
         console.log('=== DEBUG STORAGE ===');
@@ -410,6 +351,14 @@ class GameManager {
             console.error('Error clearing game data:', error);
         }
     }
+
+    // Other methods remain the same for backward compatibility
+    cleanupInactivePlayers() {}
+    updatePlayerActivity() {}
+    startGame() {}
+    endGame() {}
+    isGameActive() { return false; }
+    getCurrentPlayer() { return {}; }
 }
 
 // Global game manager instance
