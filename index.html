@@ -1,84 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suresh Sala - Portfolio & Projects</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Suresh Sala | Profile Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="floating-elements">
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
+
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200" alt="Cover" class="card-cover">
+
+        <div class="card-body">
+            <img src="images/profile_image.png" alt="Suresh Sala" class="profile-img">
+
+            <div class="content-wrapper">
+                <h2 class="card-title">Suresh Sala</h2>
+                <p class="workplace">Working at <span>In Time Tec</span>, Bengaluru, Karnataka, India</p>
+                <p class="tagline">suresh.sala1992@gmail.com</p>
+
+                <div class="action-row">
+                    <div class="social-links">
+                        <a class="text-gradient" href="https://twitter.com/SalaSuresh" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a class="text-gradient" href="https://www.linkedin.com/in/suresh-sala-190ba681/"
+                            target="_blank" rel="noopener noreferrer">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a class="text-gradient" href="https://github.com/SalaSuresh" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a class="text-gradient" href="https://www.instagram.com/lens_ka_art/" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a class="text-gradient" href="https://www.facebook.com/suresh.cse.9" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a class="text-gradient profile-icon-link"
+                            href="https://salasuresh.github.io/Profile/index.html" title="View Profile">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1 class="name">Suresh Sala</h1>
-            <p class="tagline">Developer • Creator • Innovator</p>
-        </div>
-
-        <div class="cards-container">
-            <div class="card" onclick="window.location.href='https://salasuresh.github.io/profile/'">
-                <div class="card-icon">
-                    <span class="material-icons">person</span>
-                </div>
-                <h2 class="card-title">Profile</h2>
-                <p class="card-description">
-                    Explore my professional journey, skills, and experience. 
-                    Discover my background, achievements, and what drives me in the world of technology.
-                </p>
-                <button class="card-button">View Profile</button>
-            </div>
-
-            <div class="card" onclick="window.location.href='https://salasuresh.github.io/housieClub/'">
-                <div class="card-icon">
-                    <span class="material-icons">casino</span>
-                </div>
-                <h2 class="card-title">Housie Club</h2>
-                <p class="card-description">
-                    Experience the excitement of Housie (Tambola) with our interactive tools. 
-                    Choose your role as Host or Guest to start playing.
-                </p>
-                <button class="card-button">Play Housie</button>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>© 2024 Suresh Sala. Built with passion and creativity.</p>
-        </div>
-    </div>
-
-    <script>
-        // Add smooth scroll behavior
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add click handlers for better UX
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Add a small delay for visual feedback
-                    setTimeout(() => {
-                        const link = this.querySelector('button').textContent.toLowerCase().includes('profile') 
-                            ? 'Profile/' 
-                            : 'housieClub/';
-                        window.location.href = link;
-                    }, 150);
-                });
-            });
-
-            // Add parallax effect to floating elements
-            window.addEventListener('scroll', function() {
-                const scrolled = window.pageYOffset;
-                const floatingElements = document.querySelectorAll('.floating-element');
-                floatingElements.forEach((element, index) => {
-                    const speed = 0.5 + (index * 0.1);
-                    element.style.transform = `translateY(${scrolled * speed}px)`;
-                });
-            });
-        });
-    </script>
 </body>
-</html> 
+
+</html>
