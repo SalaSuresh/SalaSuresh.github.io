@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habit Tracker v2.1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:#1e293b;padding:20px;}
+.wrap{max-width: 1000px; margin: 0 auto; padding:20px 4px 24px;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.nav{display:flex;align-items:center;gap:10px;}
+.nav button{background:none;border:0.5px solid #e2e8f0;border-radius:8px;width:32px;height:32px;cursor:pointer;color:#64748b;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.nav button:hover{background:#f8fafc;}
+.month{font-size:18px;font-weight:600;color:#1e293b;min-width:140px;text-align:center;}
+.add-btn{background:#3a7d0a;color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.2px;transition:opacity .15s;}
+.add-btn:hover{opacity:.88;}
+
+/* FIXED: Responsive table without horizontal scroll */
+.table-wrap{width: 100%; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px; background: white; overflow: hidden;}
+table{width:100%; border-collapse:separate; border-spacing:0; table-layout: fixed;}
+.col-label{width:120px; text-align: left; padding-left: 10px;}
+.col-streak{width:60px;}
+
+thead th{font-size:10px; font-weight:500; color:#94a3b8; text-align:center; padding: 10px 0;}
+.habit-name-inner{display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1e293b;}
+.hdot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
+.hname{overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:70px;}
+
+.del{background:none; border:none; color:#94a3b8; cursor:pointer; font-size:12px; padding:2px; margin-left:auto;}
+.del:hover{color:#E24B4A;}
+
+/* FIXED: Cells scale to fit the screen */
+td.day-td{padding:4px 1px; text-align:center;}
+.cell{width:90%; max-width:24px; aspect-ratio:1/1; border-radius:6px; border:1.5px solid #cbd5e1; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:transform .1s; background:#f8fafc;}
+.cell:hover{transform:scale(1.2);}
+.cell.done{border:none;}
+.cell.done::after{content:''; display:block; width:8px; height:8px; border-radius:2px; background:rgba(255,255,255,0.5);}
+.cell.future{opacity:.2; cursor:default; pointer-events:none;}
+.cell.today-ring{box-shadow:0 0 0 2px #3a7d0a;}
+
+.streak-cell{text-align:center;}
+.spill{display:inline-block; font-size:10px; font-weight:700; border-radius:20px; padding:2px 8px;}
+
+.divider{height:1px; background:#e2e8f0; margin:20px 0;}
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width: 600px;}
+.scard{background:#f8fafc; border-radius:12px; padding:14px; border: 1px solid #e2e8f0;}
+.sval{font-size:22px; font-weight:700; color:#1e293b;}
+.slbl{font-size:11px; color:#64748b; margin-top:2px;}
+
+/* Modal Styling */
+.mbg{position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; z-index:200;}
+.modal{background:#fff; border-radius:16px; padding:24px; width:300px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
+.modal h3{font-size:16px; margin-bottom:15px;}
+.modal input{width:100%; margin-bottom:15px; border-radius:8px; border:1px solid #e2e8f0; padding:10px; font-size:14px;}
+.cprow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+.cp{width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent;}
+.cp.sel{border-color:#1e293b;}
+.mbtns{display:flex; gap:10px;}
+.mbtns button{flex:1; padding:10px; border-radius:8px; cursor:pointer; font-weight:600; border:1px solid #e2e8f0;}
+.confirm{color:#fff; border:none !important;}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="root"></div>
+
+<script>
+const PALETTE=[
+  {c:'#3a7d0a',l:'#e8f5d6'}, {c:'#1a6bbf',l:'#dceeff'},
+  {c:'#b5380d',l:'#fde8e2'}, {c:'#9a2f6b',l:'#fce8f3'},
+  {c:'#7c4dbb',l:'#ece6fb'}, {c:'#b07d0a',l:'#fef3d6'},
+  {c:'#0d8a6e',l:'#d5f5ef'}, {c:'#5e6a74',l:'#eaecee'}
+];
+
+let habits,viewY,viewM,modal=false,editId=null,mName='',mColor=PALETTE[0].c;
+const now=new Date();
+
+function load(){
+  try{habits=JSON.parse(localStorage.getItem('ht3'))||null;}catch(e){habits=null;}
+  if(!habits)habits=[
+    {id:1,name:'Morning walk',color:PALETTE[0].c,done:{}},
+    {id:2,name:'Read 20 min',color:PALETTE[1].c,done:{}},
+    {id:3,name:'Drink water',color:PALETTE[2].c,done:{}}
+  ];
+  viewY=now.getFullYear(); viewM=now.getMonth();
+}
+
+function save(){localStorage.setItem('ht3',JSON.stringify(habits));}
+function dim(y,m){return new Date(y,m+1,0).getDate();}
+function dkey(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+
+// Streak logic counts consecutive completed days backwards from today
+function streak(h){
+    let s=0, d=new Date(now);
+    while(true){
+        const k=dkey(d.getFullYear(),d.getMonth(),d.getDate());
+        if(h.done[k]){s++; d.setDate(d.getDate()-1);} else break;
+    }
+    return s;
+}
+
+function pct(h){
+    const days=dim(viewY,viewM);
+    const past=(viewY===now.getFullYear()&&viewM===now.getMonth())?now.getDate():days;
+    let c=0; for(let d=1;d<=past;d++) if(h.done[dkey(viewY,viewM,d)]) c++;
+    return past>0?Math.round(c/past*100):0;
+}
+
+function render(){
+  const days=dim(viewY,viewM);
+  const isCur=viewY===now.getFullYear()&&viewM===now.getMonth();
+  const mname=new Date(viewY,viewM,1).toLocaleString('default',{month:'long',year:'numeric'});
+
+  let thDays='';
+  for(let d=1;d<=days;d++) thDays+=`<th>${d%5===1||d===1?d:''}</th>`;
+
+  let rows=habits.map(h=>{
+    let cells='';
+    for(let d=1;d<=days;d++){
+      const k=dkey(viewY,viewM,d);
+      const done=!!h.done[k];
+      const fut=isCur&&d>now.getDate();
+      const tod=isCur&&d===now.getDate();
+      cells+=`<td class="day-td"><div class="cell ${done?'done':''} ${fut?'future':''} ${tod?'today-ring':''}" style="${done?'background:'+h.color:''}" data-id="${h.id}" data-k="${k}"></div></td>`;
+    }
+    const s=streak(h);
+    return `<tr>
+      <td class="col-label"><div class="habit-name-inner"><div class="hdot" style="background:${h.color}"></div><span class="hname">${h.name}</span><button class="del" data-del="${h.id}">✕</button></div></td>
+      ${cells}
+      <td class="streak-cell"><span class="spill" style="background:${PALETTE.find(p=>p.c===h.color).l};color:${h.color}">${s>0?'🔥 '+s+'d':pct(h)+'%'}</span></td>
+    </tr>`;
+  }).join('');
+
+  let modalHtml='';
+  if(modal){
+    const dots=PALETTE.map(p=>`<div class="cp ${mColor===p.c?'sel':''}" style="background:${p.c}" data-col="${p.c}"></div>`).join('');
+    modalHtml=`<div class="mbg" id="mbg"><div class="modal"><h3>New Habit</h3><input id="minput" type="text" placeholder="Habit name..." value="${mName}"><div class="cprow">${dots}</div><div class="mbtns"><button onclick="window.modal=false;render()">Cancel</button><button class="confirm" style="background:${mColor}" onclick="saveM()">Add</button></div></div></div>`;
+  }
+
+  document.getElementById('root').innerHTML=`
+    <div class="topbar">
+      <div class="nav"><button id="prev">‹</button><div class="month">${mname}</div><button id="next">›</button></div>
+      <button class="add-btn" id="addbtn">+ Add habit</button>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th class="col-label">Habit</th>${thDays}<th class="col-streak">Streak</th></tr></thead><tbody>${rows||'<tr><td colspan="40" style="padding:20px;text-align:center;color:#64748b">No habits yet.</td></tr>'}</tbody></table></div>
+    <div class="stats">
+      <div class="scard"><div class="sval">${habits.length?Math.round(habits.reduce((a,h)=>a+pct(h),0)/habits.length):0}%</div><div class="slbl">Avg. completion</div></div>
+      <div class="scard"><div class="sval">${habits.length?Math.max(...habits.map(streak)):0}d</div><div class="slbl">Best streak</div></div>
+      <div class="scard"><div class="sval">${habits.reduce((a,h)=>a+Object.keys(h.done).filter(k=>h.done[k]).length,0)}</div><div class="slbl">Total check-ins</div></div>
+    </div>
+    ${modalHtml}
+  `;
+
+  // Events
+  document.getElementById('prev').onclick=()=>{viewM--; if(viewM<0){viewM=11;viewY--;} render();};
+  document.getElementById('next').onclick=()=>{viewM++; if(viewM>11){viewM=0;viewY++;} render();};
+  document.getElementById('addbtn').onclick=()=>{modal=true; mName=''; mColor=PALETTE[0].c; render();};
+  document.querySelectorAll('.cell[data-id]').forEach(el=>el.onclick=()=>{const h=habits.find(x=>x.id==el.dataset.id); h.done[el.dataset.k]=!h.done[el.dataset.k]; save(); render();});
+  document.querySelectorAll('[data-del]').forEach(el=>el.onclick=()=>{habits=habits.filter(x=>x.id!=el.dataset.del); save(); render();});
+  
+  if(modal){
+    const inp = document.getElementById('minput');
+    inp.oninput = () => { mName = inp.value; };
+    document.querySelectorAll('.cp').forEach(el=>el.onclick=()=>{mColor=el.dataset.col; render();});
+  }
+}
+
+// FIXED: saveM now captures the current input text directly
+window.saveM=()=>{
+  const name = document.getElementById('minput').value.trim();
+  if(!name) return;
+  habits.push({id:Date.now(), name:name, color:mColor, done:{}});
+  save(); modal=false; render();
+};
+
+load(); render();
+</script>
+</body>
+</html>
