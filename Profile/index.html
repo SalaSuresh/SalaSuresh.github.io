@@ -42,16 +42,29 @@
         .header-card {
             padding: 0;
             position: relative;
+            overflow: visible;
+            /* CRITICAL: This allows the image to overlap without being cut off */
+            background: var(--card-bg);
         }
 
         .banner {
-            height: 120px;
-            background: #a0b4b7;
+            height: 160px;
+            background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8);
+            /* Match the top corners of the card */
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
         }
 
         .profile-main {
             padding: 0 24px 24px 24px;
-            margin-top: -60px;
+            margin-top: -75px;
+            /* Adjust this to control how much it overlaps */
+            position: relative;
+            z-index: 10;
+            /* Ensures the profile info stays above the banner background */
         }
 
         .profile-img {
@@ -61,6 +74,9 @@
             border: 4px solid #fff;
             object-fit: cover;
             background: #eee;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: block;
+            /* Removes any unwanted inline spacing */
         }
 
         h1 {
@@ -93,36 +109,21 @@
             margin-bottom: 20px;
         }
 
-        /* .logo-placeholder {
-            width: 48px;
-            height: 48px;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 10px;
-        } */
-
+        /* The Round Logo Fix */
         .logo-placeholder {
             width: 48px;
             height: 48px;
-            /* Transparent background */
             background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 10px;
-
-            /* Makes the container round */
             border-radius: 50%;
-            /* Clips the image to the circle shape */
             overflow: hidden;
+            flex-shrink: 0;
+            /* Prevents squishing in flex layout */
         }
 
         .logo-placeholder img {
-            /* Ensures the logo scales down to fit the circle */
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
@@ -156,13 +157,15 @@
 <body>
 
     <div class="container">
-        <div class="card header-card">
+        <div class="card header-card" style="overflow: visible;">
             <div class="banner"></div>
             <div class="profile-main">
                 <img src="../images/profile_image.png" alt="Suresh Sala" class="profile-img">
-                <h1>Suresh Sala</h1>
-                <div class="headline">Technical Lead at In Time Tec</div>
-                <div class="location">Bengaluru, Karnataka, India</div>
+                <div class="info-text">
+                    <h1>Suresh Sala</h1>
+                    <div class="headline">Technical Lead at In Time Tec</div>
+                    <div class="location">Bengaluru, Karnataka, India</div>
+                </div>
             </div>
         </div>
 
@@ -182,7 +185,7 @@
             <div class="experience-item">
                 <div class="logo-placeholder">
                     <img src="https://media.licdn.com/dms/image/v2/C560BAQGkaMZIPn1SOQ/company-logo_200_200/company-logo_200_200/0/1677275652074/in_time_tec_logo?e=2147483647&v=beta&t=EvWR-koyRK3_jPxkSPv_xr7fDu5mkbj454jZmUmOskQ"
-                        alt="ITT" />
+                        alt="ITT Logo" />
                 </div>
                 <div class="item-info">
                     <h3>Technical Lead</h3>
@@ -194,8 +197,8 @@
 
             <div class="experience-item">
                 <div class="logo-placeholder">
-                    <img src="data:image/jpeg;base64,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"
-                        alt="DUMADU" />
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEBAQEBAQEBASEBAQFRAQEhAPDw8OFRUWFhURFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGBAQGi0lHSUtLSsrKystKysuLS0tLSstLS0rKy0tKy0tLS0tLTctNzc3LS0rLTc3NysrKysrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAABwEEBQYIAgP/xAA3EAACAQIDBQUIAQMFAQAAAAAAAQIDEQQFBgcSITFRExZBUpEVIjIzYXFygVMUI6FCQ2Kx8CT/xAAaAQEAAwEBAQAAAAAAAAAAAAAAAQMFBAIG/8QAJhEBAAICAQMEAgMBAAAAAAAAAAE+IDx3cGRmOnsib25saW5lX3Byb2ZpbGVfbWF0Y2hfYmFubmVyIn0="
+                        alt="Dumadu Logo" />
                 </div>
                 <div class="item-info">
                     <h3>Software Engineer</h3>
@@ -210,8 +213,7 @@
 
             <div class="education-item">
                 <div class="logo-placeholder">
-                    <img src="data:image/png;base64,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"
-                        alt="GIET" />
+                    <img src="https://gietec.ac.in/wp-content/uploads/2023/12/giet_logo.png" alt="GIET Logo" />
                 </div>
                 <div class="item-info">
                     <h3>Godavari Institute of Engineering and Technology</h3>
@@ -223,7 +225,7 @@
             <div class="education-item">
                 <div class="logo-placeholder">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl4NXu2Mx9QmCwcrph56Mk485j2llQYbWQLwzVAwYb7g&s"
-                        alt="SBSP" />
+                        alt="SBSP Logo" />
                 </div>
                 <div class="item-info">
                     <h3>Smt. B. Seetha Polytechnic</h3>
