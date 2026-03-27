@@ -1,222 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Suresh Sala</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Custom Google font-->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-        <style>
-            .profile-img {
-                border-radius: 50%;
-                object-fit: cover;
-            }
-        </style>
-    </head>
-    <body class="d-flex flex-column h-100">
-        <main class="flex-shrink-0">
-            <!-- Navigation-->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-                <div class="container px-5">
-                    <a class="navbar-brand" href="index.html"><span class="fw-bolder text-primary">$U₹€$#</span></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="resume.html">Resume</a></li>
-                            <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
-                            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                        </ul>
-                    </div>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suresh Sala | Technical Lead</title>
+    <style>
+        :root {
+            --bg-color: #f3f2ef;
+            --card-bg: #ffffff;
+            --text-main: #000000e6;
+            --text-sub: #00000099;
+            --link-color: #0a66c2;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 0;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            overflow: hidden;
+            padding: 24px;
+        }
+
+        /* Header Card Specifics */
+        .header-card {
+            padding: 0;
+            position: relative;
+        }
+
+        .banner {
+            height: 120px;
+            background: #a0b4b7;
+        }
+
+        .profile-main {
+            padding: 0 24px 24px 24px;
+            margin-top: -60px;
+        }
+
+        .profile-img {
+            width: 152px;
+            height: 152px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 12px 0 4px 0;
+        }
+
+        .headline {
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .location {
+            font-size: 14px;
+            color: var(--text-sub);
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .experience-item,
+        .education-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* .logo-placeholder {
+            width: 48px;
+            height: 48px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+        } */
+
+        .logo-placeholder {
+            width: 48px;
+            height: 48px;
+            /* Transparent background */
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+
+            /* Makes the container round */
+            border-radius: 50%;
+            /* Clips the image to the circle shape */
+            overflow: hidden;
+        }
+
+        .logo-placeholder img {
+            /* Ensures the logo scales down to fit the circle */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .item-info h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .item-info p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: var(--text-sub);
+        }
+
+        .skills-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .skill-item {
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card header-card">
+            <div class="banner"></div>
+            <div class="profile-main">
+                <img src="../images/profile_image.png" alt="Suresh Sala" class="profile-img">
+                <h1>Suresh Sala</h1>
+                <div class="headline">Technical Lead at In Time Tec</div>
+                <div class="location">Bengaluru, Karnataka, India</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>About</h2>
+            <p>
+                I specialize in Android, React Native, and Java applications, with a background in the gaming industry.
+                Currently, I'm a Technical Lead at In Time Tec, leading a team to create innovative applications and
+                drive technological excellence. My focus is on developing seamless user experiences and scalable
+                solutions.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Experience</h2>
+
+            <div class="experience-item">
+                <div class="logo-placeholder">
+                    <img src="https://media.licdn.com/dms/image/v2/C560BAQGkaMZIPn1SOQ/company-logo_200_200/company-logo_200_200/0/1677275652074/in_time_tec_logo?e=2147483647&v=beta&t=EvWR-koyRK3_jPxkSPv_xr7fDu5mkbj454jZmUmOskQ"
+                        alt="ITT" />
                 </div>
-            </nav>
-            <!-- Header-->
-            <header class="py-5">
-                <div class="container px-5 pb-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-xxl-5">
-                            <!-- Header text content-->
-                            <div class="text-center text-xxl-start">
-                                <div class="badge bg-gradient-primary-to-secondary text-white mb-4"><div class="text-uppercase">Design &middot; Development</div></div>
-                                <div class="fs-3 fw-light text-muted">I can help your business to</div>
-                                <h1 class="display-3 fw-bolder mb-5"><span class="text-gradient d-inline">Get online and grow fast</span></h1>
-                                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-                                    <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="resume.html">Resume</a>
-                                    <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" href="projects.html">Projects</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xxl-7">
-                            <!-- Header profile picture-->
-                            <div class="d-flex justify-content-center mt-5 mt-xxl-0">
-                                <div class="profile bg-gradient-primary-to-secondary">
-                                    <!-- TIP: For best results, use a photo with a transparent background like the demo example below-->
-                                    <!-- Watch a tutorial on how to do this on YouTube (link)-->
-                                    <img class="profile-img" src="https://avatars.githubusercontent.com/u/10635332?v=4" alt="..." />
-                                    <div class="dots-1">
-                                        <!-- SVG Dots-->
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                            <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                                <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                                <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                                <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                                <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                                <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                                <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                                <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                                <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                                <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                                <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                                <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                                <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                                <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                                <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                                <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                                <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                                <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                                <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                                <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                                <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                            </g>
-                                        </svg>
-                                        <!-- END of SVG dots-->
-                                    </div>
-                                    <div class="dots-2">
-                                        <!-- SVG Dots-->
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                            <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                                <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                                <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                                <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                                <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                                <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                                <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                                <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                                <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                                <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                                <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                                <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                                <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                                <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                                <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                                <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                                <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                                <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                                <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                                <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                                <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                            </g>
-                                        </svg>
-                                        <!-- END of SVG dots-->
-                                    </div>
-                                    <div class="dots-3">
-                                        <!-- SVG Dots-->
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                            <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                                <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                                <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                                <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                                <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                                <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                                <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                                <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                                <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                                <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                                <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                                <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                                <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                                <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                                <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                                <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                                <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                                <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                                <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                                <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                                <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                            </g>
-                                        </svg>
-                                        <!-- END of SVG dots-->
-                                    </div>
-                                    <div class="dots-4">
-                                        <!-- SVG Dots-->
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">
-                                            <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
-                                                <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z"></path>
-                                                <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z"></path>
-                                                <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z"></path>
-                                                <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z"></path>
-                                                <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z"></path>
-                                                <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z"></path>
-                                                <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z"></path>
-                                                <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z"></path>
-                                                <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z"></path>
-                                                <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z"></path>
-                                                <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z"></path>
-                                                <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z"></path>
-                                                <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z"></path>
-                                                <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z"></path>
-                                                <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z"></path>
-                                                <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z"></path>
-                                                <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z"></path>
-                                                <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z"></path>
-                                                <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z"></path>
-                                                <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z"></path>
-                                            </g>
-                                        </svg>
-                                        <!-- END of SVG dots-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <!-- About Section-->
-            <section class="bg-light py-5">
-                <div class="container px-5">
-                    <div class="row gx-5 justify-content-center">
-                        <div class="col-xxl-8">
-                            <div class="text-center my-5">
-                                <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">About Me</span></h2>
-                                <p class="lead fw-light mb-4">My name is Suresh and I build scalable mobile and web applications</p>
-                                <p class="text-muted">I specialize in Android (Kotlin/Java) and React Native, with a strong focus on clean architecture, performance, and Firebase integration. I build, lead, and deploy full-stack applications that are production-ready and user-centric.</p>
-                                <div class="d-flex justify-content-center fs-2 gap-4">
-                                    <a class="text-gradient" href="https://twitter.com/SalaSuresh"><i class="bi bi-twitter"></i></a>
-                                    <a class="text-gradient" href="https://www.linkedin.com/in/suresh-sala-190ba681/"><i class="bi bi-linkedin"></i></a>
-                                    <a class="text-gradient" href="https://github.com/SalaSuresh"><i class="bi bi-github"></i></a>
-                                    <a class="text-gradient" href="https://www.instagram.com/lens_ka_art/"><i class="bi bi-instagram"></i></a>
-                                    <a class="text-gradient" href=https://www.facebook.com/suresh.cse.9"><i class="bi bi-facebook"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        <!-- Footer-->
-        <footer class="bg-white py-4 mt-auto">
-            <div class="container px-5">
-                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                    <div class="col-auto"><div class="small m-0">Copyright &copy; Suresh Sala</div></div>
-                    <div class="col-auto">
-                        Suresh Sala
-                    </div>
+                <div class="item-info">
+                    <h3>Technical Lead</h3>
+                    <p>In Time Tec · Full-time</p>
+                    <p>Apr 2018 - Present · 8 yrs</p>
+                    <p><strong>Skills:</strong> Technology Leadership, Node.js, React Native</p>
                 </div>
             </div>
-        </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
+
+            <div class="experience-item">
+                <div class="logo-placeholder">
+                    <img src="data:image/jpeg;base64,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"
+                        alt="DUMADU" />
+                </div>
+                <div class="item-info">
+                    <h3>Software Engineer</h3>
+                    <p>Dumadu Games Pvt Ltd</p>
+                    <p>Apr 2013 - Mar 2018 · 5 yrs</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Education</h2>
+
+            <div class="education-item">
+                <div class="logo-placeholder">
+                    <img src="data:image/png;base64,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"
+                        alt="GIET" />
+                </div>
+                <div class="item-info">
+                    <h3>Godavari Institute of Engineering and Technology</h3>
+                    <p>Bachelor of Technology (B.Tech.), CSE</p>
+                    <p>2010 - 2013</p>
+                </div>
+            </div>
+
+            <div class="education-item">
+                <div class="logo-placeholder">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl4NXu2Mx9QmCwcrph56Mk485j2llQYbWQLwzVAwYb7g&s"
+                        alt="SBSP" />
+                </div>
+                <div class="item-info">
+                    <h3>Smt. B. Seetha Polytechnic</h3>
+                    <p>Diploma, Computer Engineering</p>
+                    <p>2007 - 2010</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Skills</h2>
+            <div class="skills-list">
+                <div class="skill-item">Technology Leadership</div>
+                <div class="skill-item">Node.js</div>
+                <div class="skill-item">React Native</div>
+                <div class="skill-item">Android Development</div>
+                <div class="skill-item">Java</div>
+                <div class="skill-item">Python</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
 </html>
