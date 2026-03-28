@@ -9,10 +9,200 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            /* Hashnode Pure Dark Theme */
+            --bg-color: #000000;
+            --card-bg: #111111;
+            --text-main: #ffffff;
+            --text-sub: #a1a1aa;
+            --border-color: #27272a;
+            --accent-orange: #ff8c00;
+            --accent-gradient: linear-gradient(135deg, #ffffff, #a1a1aa);
+            --banner-filter: brightness(0.9) saturate(1.2);
+        }
+
+        body.light-mode {
+            /* Monochrome Light Theme */
+            --bg-color: #f4f4f5;
+            --card-bg: #ffffff;
+            --text-main: #09090b;
+            --text-sub: #52525b;
+            --border-color: #e4e4e7;
+            --accent-gradient: linear-gradient(135deg, #09090b, #52525b);
+            --banner-filter: brightness(1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Card Container */
+        .card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: visible;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            margin: 20px;
+        }
+
+        .card-cover {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            filter: var(--banner-filter);
+            display: block;
+        }
+
+        .card-body {
+            padding: 0 30px 30px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid var(--card-bg);
+            margin-top: -60px;
+            object-fit: cover;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            background: #27272a;
+        }
+
+        .content-wrapper {
+            margin-top: 15px;
+        }
+
+        .card-title {
+            font-size: 26px;
+            margin: 0;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .workplace {
+            font-size: 15px;
+            color: var(--text-main);
+            margin: 8px 0;
+        }
+
+        .workplace span {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        .tagline a {
+            color: var(--text-sub);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .tagline a:hover {
+            color: var(--text-main);
+        }
+
+        /* Social Links & Action Buttons */
+        .action-row {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            color: var(--text-main);
+            font-size: 22px;
+            text-decoration: none;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            opacity: 0.8;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+            opacity: 1;
+        }
+
+        /* Secondary Row for Navigation */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-nav {
+            background: var(--text-main);
+            color: var(--card-bg) !important;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-nav:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 
 <body>
+
+    <button class="theme-toggle" id="theme-btn" title="Toggle Theme">
+        <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
+    </button>
 
     <div class="card">
         <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200" alt="Cover" class="card-cover">
@@ -22,33 +212,37 @@
 
             <div class="content-wrapper">
                 <h2 class="card-title">Suresh Sala</h2>
-                <p class="workplace">Working at <span>In Time Tec</span>, Bengaluru, Karnataka, India</p>
-                <p class="tagline">suresh.sala1992@gmail.com</p>
+                <p class="workplace">Working at <span>In Time Tec</span>, Bengaluru, India</p>
+                <p class="tagline">
+                    <a href="mailto:suresh.sala1992@gmail.com">suresh.sala1992@gmail.com</a>
+                </p>
 
                 <div class="action-row">
                     <div class="social-links">
-                        <a class="text-gradient" href="https://twitter.com/SalaSuresh" target="_blank"
-                            rel="noopener noreferrer">
+                        <a href="https://twitter.com/SalaSuresh" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-twitter"></i>
                         </a>
-                        <a class="text-gradient" href="https://www.linkedin.com/in/suresh-sala-190ba681/"
-                            target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.linkedin.com/in/suresh-sala-190ba681/" target="_blank"
+                            rel="noopener noreferrer">
                             <i class="bi bi-linkedin"></i>
                         </a>
-                        <a class="text-gradient" href="https://github.com/SalaSuresh" target="_blank"
-                            rel="noopener noreferrer">
+                        <a href="https://github.com/SalaSuresh" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-github"></i>
                         </a>
-                        <a class="text-gradient" href="https://www.instagram.com/lens_ka_art/" target="_blank"
-                            rel="noopener noreferrer">
+                        <a href="https://www.instagram.com/lens_ka_art/" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-instagram"></i>
                         </a>
-                        <a class="text-gradient" href="https://www.facebook.com/suresh.cse.9" target="_blank"
-                            rel="noopener noreferrer">
+                        <a href="https://www.facebook.com/suresh.cse.9" target="_blank" rel="noopener noreferrer">
                             <i class="bi bi-facebook"></i>
                         </a>
-                        <a class="text-gradient profile-icon-link" href="profile/index.html" title="View Profile">
-                            <i class="bi bi-chevron-right"></i>
+                    </div>
+
+                    <div class="nav-links">
+                        <a class="btn-nav" href="scan.html" title="Scan QR Code">
+                            <i class="bi bi-qr-code-scan"></i>
+                        </a>
+                        <a class="btn-nav" href="profile/index.html" title="View Full Profile"><i
+                                class="bi bi-chevron-right"></i>
                         </a>
                     </div>
                 </div>
@@ -56,6 +250,23 @@
         </div>
     </div>
 
+    <script>
+        const themeBtn = document.getElementById('theme-btn');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            themeIcon.className = isLight ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+            localStorage.setItem('main-theme', isLight ? 'light' : 'dark');
+        });
+
+        if (localStorage.getItem('main-theme') === 'light') {
+            body.classList.add('light-mode');
+            themeIcon.className = 'bi bi-sun-fill';
+        }
+    </script>
 </body>
 
 </html>
