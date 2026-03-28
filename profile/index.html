@@ -5,122 +5,201 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suresh Sala | Technical Lead</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
+            /* Monochrome Dark Theme */
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --accent-gradient: linear-gradient(135deg, #ffffff, #94a3b8);
+            --accent-color: #ffffff;
+            --accent-orange: #ff8c00;
+            /* Branding color */
+            --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            /* Improved banner filter: higher brightness and saturation */
+            --banner-filter: brightness(0.9) saturate(1.2);
+        }
+
+        body.light-mode {
             --bg-color: #f3f2ef;
             --card-bg: #ffffff;
-            --text-main: #000000e6;
-            --text-sub: #00000099;
-            --link-color: #0a66c2;
-            --border-color: #e0e0e0;
+            --text-main: #000000;
+            --text-sub: #444444;
+            --border-color: #d1d5db;
+            --accent-gradient: linear-gradient(135deg, #000000, #444444);
+            --accent-color: #000000;
+            --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --banner-filter: brightness(1) saturate(1.1);
         }
 
         body {
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px 0;
-            line-height: 1.5;
+            padding: 40px 0;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        /* Card Styles */
         .card {
             background: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
-            margin-bottom: 12px;
-            overflow: hidden;
-            padding: 24px;
+            margin-bottom: 24px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Header Card Specifics */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        /* Header Card */
         .header-card {
             padding: 0;
             position: relative;
             overflow: visible;
-            /* CRITICAL: This allows the image to overlap without being cut off */
-            background: var(--card-bg);
         }
 
         .banner {
-            height: 160px;
+            height: 180px;
             background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200');
             background-size: cover;
             background-position: center;
-            filter: brightness(0.8);
-            /* Match the top corners of the card */
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            filter: var(--banner-filter);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            transition: filter 0.3s ease;
         }
 
         .profile-main {
-            padding: 0 24px 24px 24px;
-            margin-top: -75px;
-            /* Adjust this to control how much it overlaps */
+            padding: 0 30px 30px 30px;
+            margin-top: -45px;
             position: relative;
             z-index: 10;
-            /* Ensures the profile info stays above the banner background */
+            display: flex;
+            align-items: flex-end;
+            gap: 25px;
         }
 
         .profile-img {
-            width: 152px;
-            height: 152px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            border: 4px solid #fff;
+            border: 6px solid var(--card-bg);
             object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             background: #eee;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: block;
-            /* Removes any unwanted inline spacing */
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            /* Added padding-top for more space between name and header image */
+            padding-top: 55px;
+            padding-bottom: 15px;
         }
 
         h1 {
-            font-size: 24px;
-            margin: 12px 0 4px 0;
+            /* Decreased name text size as requested */
+            font-size: 30px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .headline {
-            font-size: 18px;
+            font-size: 19px;
+            font-weight: 500;
             color: var(--text-main);
-            margin-bottom: 8px;
+        }
+
+        .workplace-highlight {
+            color: var(--accent-orange);
+            font-weight: 600;
         }
 
         .location {
             font-size: 14px;
             color: var(--text-sub);
+            margin-top: 5px;
         }
 
+        /* Section Titles */
         h2 {
-            font-size: 20px;
+            font-size: 22px;
             margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            font-weight: 600;
         }
 
+        /* Items */
         .experience-item,
         .education-item {
             display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* The Round Logo Fix */
+        .experience-item:last-child,
+        .education-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
         .logo-placeholder {
-            width: 48px;
-            height: 48px;
-            background: transparent;
+            width: 60px;
+            height: 60px;
+            background: #ffffff;
+            padding: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            overflow: hidden;
+            border-radius: 12px;
             flex-shrink: 0;
-            /* Prevents squishing in flex layout */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .logo-placeholder img {
@@ -131,40 +210,81 @@
 
         .item-info h3 {
             margin: 0;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .item-info p {
-            margin: 2px 0;
+            margin: 4px 0;
             font-size: 14px;
             color: var(--text-sub);
         }
 
-        .skills-list {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        /* Skills */
+        .skills-badge-list {
+            display: flex;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
-        .skill-item {
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-            padding: 8px 0;
+        .skill-badge {
+            background: transparent;
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .skill-badge:hover {
+            background: var(--text-main);
+            color: var(--card-bg);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 650px) {
+            .profile-main {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-top: -80px;
+            }
+
+            .info-text {
+                padding-top: 10px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .experience-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
         }
     </style>
 </head>
 
 <body>
 
+    <button class="theme-toggle" id="theme-btn" title="Toggle Light/Dark Mode">
+        <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
+    </button>
+
     <div class="container">
-        <div class="card header-card" style="overflow: visible;">
+        <div class="card header-card">
             <div class="banner"></div>
             <div class="profile-main">
                 <img src="../images/profile_image.png" alt="Suresh Sala" class="profile-img">
                 <div class="info-text">
                     <h1>Suresh Sala</h1>
-                    <div class="headline">Technical Lead at In Time Tec</div>
-                    <div class="location">Bengaluru, Karnataka, India</div>
+                    <div class="headline">Technical Lead at <span class="workplace-highlight">In Time Tec</span></div>
+                    <div class="location"><i class="bi bi-geo-alt-fill"></i> Bengaluru, Karnataka, India</div>
                 </div>
             </div>
         </div>
@@ -191,7 +311,7 @@
                     <h3>Technical Lead</h3>
                     <p>In Time Tec · Full-time</p>
                     <p>Apr 2018 - Present · 8 yrs</p>
-                    <p><strong>Skills:</strong> Technology Leadership, Node.js, React Native</p>
+                    <p><strong>Key Skills:</strong> Architecture, Leadership, Node.js, React Native</p>
                 </div>
             </div>
 
@@ -236,18 +356,42 @@
         </div>
 
         <div class="card">
-            <h2>Skills</h2>
-            <div class="skills-list">
-                <div class="skill-item">Technology Leadership</div>
-                <div class="skill-item">Node.js</div>
-                <div class="skill-item">React Native</div>
-                <div class="skill-item">Android Development</div>
-                <div class="skill-item">Java</div>
-                <div class="skill-item">Python</div>
+            <h2>Technical Skills</h2>
+            <div class="skills-badge-list">
+                <div class="skill-badge">Technology Leadership</div>
+                <div class="skill-badge">Node.js</div>
+                <div class="skill-badge">React Native</div>
+                <div class="skill-badge">Android Development</div>
+                <div class="skill-badge">Java</div>
+                <div class="skill-badge">Python</div>
+                <div class="skill-badge">UI/UX Design</div>
+                <div class="skill-badge">System Architecture</div>
             </div>
         </div>
     </div>
 
+    <script>
+        const themeBtn = document.getElementById('theme-btn');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
+            } else {
+                themeIcon.classList.replace('bi-sun-fill', 'bi-moon-stars-fill');
+            }
+
+            localStorage.setItem('portfolio-theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        if (localStorage.getItem('portfolio-theme') === 'light') {
+            body.classList.add('light-mode');
+            themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
+        }
+    </script>
 </body>
 
 </html>
